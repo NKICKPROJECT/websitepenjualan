@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VELOURS - Modern Fashion & Apparel</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f4f7f6',
+                            100: '#e3eae7',
+                            500: '#1e3a34', // Emerald deep forest
+                            600: '#142924',
+                            700: '#0d1c18',
+                            gold: '#c5a059', // Accent luxury gold
+                            goldhover: '#b08c46'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Smooth Styling & Animations */
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+        }
+
+        .product-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        }
+
+        .team-card {
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover .team-overlay {
+            opacity: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-gold selection:text-white">
+
+    <!-- Toast Notification Box (Pengganti alert) -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Modal Detail Pembelian / Redirect -->
+    <div id="buy-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 m-4 shadow-2xl transform scale-95 transition-all duration-300" id="buy-modal-content">
+            <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                <h3 class="text-xl font-bold text-gray-900" id="modal-product-title">Konfirmasi Pembelian</h3>
+                <button onclick="closeBuyModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="py-4 space-y-4">
+                <div class="flex items-center gap-4">
+                    <img id="modal-product-img" src="" alt="Produk" class="w-20 h-20 object-cover rounded-xl border">
+                    <div>
+                        <h4 id="modal-product-name" class="font-bold text-gray-800 text-lg"></h4>
+                        <p id="modal-product-price" class="text-brand-gold font-semibold"></p>
+                        <span class="text-xs text-gray-500">Stok Tersedia • Original Quality</span>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 flex items-start gap-2">
+                    <i class="fa-solid fa-circle-info mt-0.5 text-amber-600"></i>
+                    <div>
+                        <strong>Petunjuk Link Pembelian:</strong> Anda akan diarahkan ke link web/WhatsApp yang telah dikonfigurasi pada tombol produk ini.
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeBuyModal()" class="w-1/2 py-3 px-4 rounded-xl border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition">
+                    Batal
+                </button>
+                <a id="modal-buy-link" href="#" target="_blank" onclick="closeBuyModal()" class="w-1/2 py-3 px-4 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-center shadow-lg shadow-brand-500/20 transition flex items-center justify-center gap-2">
+                    <span>Lanjutkan Ke Web</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel Pengaturan Cepat / Live Customizer (Memudahkan Pengguna Mengganti Logo & Link Secara Praktis) -->
+    <div id="settings-drawer" class="fixed right-0 top-1/4 z-40 translate-x-full transition-transform duration-300 ease-in-out bg-white shadow-2xl rounded-l-2xl border border-gray-200 w-80 p-5">
+        <button onclick="toggleSettingsDrawer()" class="absolute -left-12 top-6 bg-brand-500 text-white p-3 rounded-l-xl shadow-lg hover:bg-brand-600 transition flex items-center justify-center">
+            <i class="fa-solid fa-gear text-lg animate-spin-slow"></i>
+        </button>
+        <div class="flex justify-between items-center mb-4 border-b pb-2">
+            <h4 class="font-bold text-gray-800 flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-brand-gold"></i> Live Quick Editor
+            </h4>
+            <button onclick="toggleSettingsDrawer()" class="text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <p class="text-xs text-gray-500 mb-4">Ganti URL logo perusahaan dan test perubahannya secara real-time:</p>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">URL Logo Perusahaan:</label>
+                <input type="text" id="input-logo-url" value="assets/images/logo.png" 
+                    class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
+            </div>
+            <button onclick="updateLogoImage()" class="w-full bg-brand-gold hover:bg-brand-goldhover text-white text-xs font-bold py-2.5 rounded-lg transition shadow">
+                Update Logo Sekarang
+            </button>
+            
+            <div class="pt-3 border-t">
+                <span class="text-xs text-gray-400 italic">Catatan: Anda juga bisa langsung mengganti nilai `src="..."` logo di baris HTML kode ini kapan saja.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER & NAVIGATION -->
+    <header class="sticky top-0 z-30 glass-nav transition-all duration-300 border-b border-slate-200/60">
+        <div class="max-w-7xl mx-mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo Perusahaan (Bisa digonta ganti foto & teksnya) -->
+            <a href="#home" class="flex items-center gap-3 group">
+                <div class="relative w-11 h-11 rounded-xl overflow-hidden shadow-md bg-brand-500 flex items-center justify-center p-0.5 group-hover:scale-105 transition-transform">
+                    <img id="company-logo" 
+                         src="assets/images/logo.png" 
+                         alt="Logo Perusahaan" 
+                         class="w-full h-full object-cover rounded-lg"
+                         onerror="this.src='https://placehold.co/100x100/1e3a34/ffffff?text=LOGO'">
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-xl tracking-wider text-slate-900 group-hover:text-brand-gold transition-colors">VELOURS</span>
+                    <span class="text-[10px] tracking-widest text-slate-500 uppercase -mt-1 font-semibold">Apparel Co.</span>
+                </div>
+            </a>
+
+            <!-- Menu Navigasi Dekstop (Tab Menu Utama) -->
+            <nav class="hidden md:flex items-center gap-1 bg-slate-100/80 p-1.5 rounded-full border border-slate-200/80">
+                <a href="#home" class="nav-link px-5 py-2 text-sm font-medium rounded-full text-slate-700 hover:text-brand-500 transition-all hover:bg-white">
+                    Beranda
+                </a>
+                <a href="#produk" class="nav-link px-5 py-2 text-sm font-medium rounded-full text-slate-700 hover:text-brand-500 transition-all hover:bg-white">
+                    <i class="fa-solid fa-shirt text-xs mr-1.5 text-brand-gold"></i>Produk
+                </a>
+                <a href="#team" class="nav-link px-5 py-2 text-sm font-medium rounded-full text-slate-700 hover:text-brand-500 transition-all hover:bg-white">
+                    <i class="fa-solid fa-users text-xs mr-1.5 text-brand-gold"></i>Tim Kami
+                </a>
+                <a href="#tentang" class="nav-link px-5 py-2 text-sm font-medium rounded-full text-slate-700 hover:text-brand-500 transition-all hover:bg-white">
+                    <i class="fa-solid fa-building text-xs mr-1.5 text-brand-gold"></i>Tentang Perusahaan
+                </a>
+            </nav>
+
+            <!-- Action Button & Mobile Menu Toggle -->
+            <div class="flex items-center gap-3">
+                <a href="#produk" class="hidden sm:flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg shadow-brand-500/20 transition-all hover:shadow-xl hover:-translate-y-0.5">
+                    <span>Belanja</span>
+                    <i class="fa-solid fa-bag-shopping text-xs"></i>
+                </a>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-2 shadow-xl">
+            <a href="#home" onclick="toggleMobileMenu()" class="block px-4 py-3 rounded-xl font-medium text-slate-700 hover:bg-slate-50 hover:text-brand-500">Beranda</a>
+            <a href="#produk" onclick="toggleMobileMenu()" class="block px-4 py-3 rounded-xl font-medium text-slate-700 hover:bg-slate-50 hover:text-brand-500">Produk Baju</a>
+            <a href="#team" onclick="toggleMobileMenu()" class="block px-4 py-3 rounded-xl font-medium text-slate-700 hover:bg-slate-50 hover:text-brand-500">Tim Profesional</a>
+            <a href="#tentang" onclick="toggleMobileMenu()" class="block px-4 py-3 rounded-xl font-medium text-slate-700 hover:bg-slate-50 hover:text-brand-500">Tentang Perusahaan</a>
+        </div>
+    </header>
+
+    <!-- HERO BANNER SECTION -->
+    <section id="home" class="relative pt-8 pb-20 lg:pt-16 lg:pb-28 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-gold/10 border border-brand-gold/30 text-brand-gold font-semibold text-xs tracking-wide uppercase">
+                        <i class="fa-solid fa-crown"></i> Koleksi Fashion Modern 2026
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight">
+                        Tampil Elegan Dengan <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 via-brand-gold to-emerald-700">Koleksi Pakaian</span> Terbaik
+                    </h1>
+                    <p class="text-slate-600 text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        Nikmati kenyamanan bahan premium bertaraf internasional dengan potongan desain modern yang tertata rapi untuk gaya hidup Anda sehari-hari.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
+                        <a href="#produk" class="px-8 py-4 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-base shadow-lg shadow-brand-500/30 transition-all hover:-translate-y-1 text-center flex items-center justify-center gap-2">
+                            <span>Lihat 5 Produk Utama</span>
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </a>
+                        <a href="#tentang" class="px-8 py-4 rounded-xl border-2 border-slate-300 hover:border-brand-500 text-slate-700 hover:text-brand-500 font-bold text-base transition-all text-center">
+                            Tentang Perusahaan
+                        </a>
+                    </div>
+
+                    <!-- Highlight stats -->
+                    <div class="pt-8 grid grid-cols-3 gap-4 border-t border-slate-200/80 max-w-lg mx-auto lg:mx-0">
+                        <div>
+                            <p class="text-2xl font-extrabold text-slate-900">100%</p>
+                            <p class="text-xs text-slate-500 font-medium">Cotton Combed Original</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-extrabold text-slate-900">15k+</p>
+                            <p class="text-xs text-slate-500 font-medium">Pelanggan Puas</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-extrabold text-slate-900">4.9/5</p>
+                            <p class="text-xs text-slate-500 font-medium">Rating Ulasan</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 relative">
+                    <div class="relative mx-auto max-w-md lg:max-w-none">
+                        <div class="absolute -inset-4 bg-gradient-to-r from-brand-gold to-brand-500 rounded-3xl blur-2xl opacity-20 transform -rotate-3"></div>
+                        <div class="relative bg-white p-3 rounded-3xl shadow-2xl border border-slate-100 overflow-hidden">
+                            <img src="assets/images/hero.jpg" 
+                                 alt="Modern Fashion Apparel Showcase" 
+                                 class="rounded-2xl w-full h-[450px] object-cover"
+                                 onerror="this.src='https://placehold.co/600x800/1e3a34/ffffff?text=Fashion+Collection'">
+                            
+                            <!-- Floating Tag Badge -->
+                            <div class="absolute bottom-6 left-6 right-6 glass-card p-4 rounded-xl shadow-lg border border-white/50 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold">
+                                        <i class="fa-solid fa-check"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-800">Garansi Kualitas</p>
+                                        <p class="text-[11px] text-slate-500">Jahitan Rapi & Garansi Retur</p>
+                                    </div>
+                                </div>
+                                <span class="bg-brand-gold/20 text-brand-gold font-bold text-xs px-2.5 py-1 rounded-full">New Batch</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 1: SEKSI PRODUK (5 PRODUK LENGKAP & CONFIGURABLE PURCHASE LINK) -->
+    <section id="produk" class="py-20 bg-slate-100/70 border-t border-slate-200/60 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-500 font-bold text-xs uppercase tracking-wider">
+                    <i class="fa-solid fa-tags"></i> Katalog Baju Unggulan
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">5 Produk Baju Terpopuler Kami</h2>
+                <p class="text-slate-600 text-base">
+                    Setiap produk dibuat dengan ketelitian tinggi, desain modern, serta tombol transaksi cepat yang langsung terhubung ke website atau saluran pembelian Anda.
+                </p>
+            </div>
+
+            <!-- GRID 5 PRODUK BAJU -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- PRODUK 1 -->
+                <div class="product-card bg-white rounded-2xl overflow-hidden border border-slate-200 flex flex-col justify-between shadow-sm hover:shadow-xl">
+                    <div class="relative overflow-hidden group">
+                        <img src="assets/images/produk-1.jpg" 
+                             alt="Kaos Oversize Streetwear" 
+                             class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+                             onerror="this.src='https://placehold.co/600x600/1e3a34/ffffff?text=Produk+1'">
+                        <span class="absolute top-4 left-4 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                            Best Seller
+                        </span>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 shadow">
+                            <i class="fa-solid fa-star text-amber-400 mr-1"></i>4.9
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="text-xs font-semibold text-brand-gold uppercase tracking-wider mb-1">T-Shirt Modern</div>
+                            <h3 class="text-xl font-bold text-slate-900 hover:text-brand-500 transition-colors">Kaos Cotton Combed 24s Heavyweight Oversize</h3>
+                            <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                Kaos polos premium dengan potongan oversize modern. Dibuat dari 100% cotton combed 24s tebal namun sangat adem dan nyaman digunakan seharian.
+                            </p>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-slate-400 block font-medium">Harga Resmi</span>
+                                <span class="text-xl font-extrabold text-brand-500">Rp 189.000</span>
+                            </div>
+                            
+                            <button 
+                                onclick="handleBuyProduct('Kaos Cotton Combed 24s Heavyweight Oversize', 'Rp 189.000', 'assets/images/produk-1.jpg', 'https://tokopedia.com')" 
+                                class="btn-buy bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>Beli Produk</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRODUK 2 -->
+                <div class="product-card bg-white rounded-2xl overflow-hidden border border-slate-200 flex flex-col justify-between shadow-sm hover:shadow-xl">
+                    <div class="relative overflow-hidden group">
+                        <img src="assets/images/produk-2.jpg" 
+                             alt="Kemeja Linen Casual" 
+                             class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+                             onerror="this.src='https://placehold.co/600x600/1e3a34/ffffff?text=Produk+2'">
+                        <span class="absolute top-4 left-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                            New Arrival
+                        </span>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 shadow">
+                            <i class="fa-solid fa-star text-amber-400 mr-1"></i>4.8
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="text-xs font-semibold text-brand-gold uppercase tracking-wider mb-1">Kemeja Pria / Wanita</div>
+                            <h3 class="text-xl font-bold text-slate-900 hover:text-brand-500 transition-colors">Kemeja Linen Cuban Collar Casual</h3>
+                            <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                Kemeja berkerah kemeja linen khas pantai & santai. Tekstur serat alami yang breathable, memberikan kesan classy dan effortlessly stylish.
+                            </p>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-slate-400 block font-medium">Harga Resmi</span>
+                                <span class="text-xl font-extrabold text-brand-500">Rp 279.000</span>
+                            </div>
+
+                            <button 
+                                onclick="handleBuyProduct('Kemeja Linen Cuban Collar Casual', 'Rp 279.000', 'assets/images/produk-2.jpg', 'https://shopee.co.id')" 
+                                class="btn-buy bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>Beli Produk</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRODUK 3 -->
+                <div class="product-card bg-white rounded-2xl overflow-hidden border border-slate-200 flex flex-col justify-between shadow-sm hover:shadow-xl">
+                    <div class="relative overflow-hidden group">
+                        <img src="assets/images/produk-3.jpg" 
+                             alt="Jaket Bomber Waterproof" 
+                             class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+                             onerror="this.src='https://placehold.co/600x600/1e3a34/ffffff?text=Produk+3'">
+                        <span class="absolute top-4 left-4 bg-brand-gold text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                            Premium Outerwear
+                        </span>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 shadow">
+                            <i class="fa-solid fa-star text-amber-400 mr-1"></i>5.0
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="text-xs font-semibold text-brand-gold uppercase tracking-wider mb-1">Outerwear & Jaket</div>
+                            <h3 class="text-xl font-bold text-slate-900 hover:text-brand-500 transition-colors">Urban Utility Waterproof Cargo Jacket</h3>
+                            <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                Jaket pelindung angin dan air hujan intensitas sedang. Dilengkapi banyak kantong utilitas dan furing dalam yang lembut dan hangat.
+                            </p>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-slate-400 block font-medium">Harga Resmi</span>
+                                <span class="text-xl font-extrabold text-brand-500">Rp 450.000</span>
+                            </div>
+
+                            <button 
+                                onclick="handleBuyProduct('Urban Utility Waterproof Cargo Jacket', 'Rp 450.000', 'assets/images/produk-3.jpg', 'https://wa.me/6281234567890?text=Halo%20saya%20ingin%20membeli%20Jaket%20Cargo')" 
+                                class="btn-buy bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>Beli Produk</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRODUK 4 -->
+                <div class="product-card bg-white rounded-2xl overflow-hidden border border-slate-200 flex flex-col justify-between shadow-sm hover:shadow-xl">
+                    <div class="relative overflow-hidden group">
+                        <img src="assets/images/produk-4.jpg" 
+                             alt="Celana Trousers" 
+                             class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+                             onerror="this.src='https://placehold.co/600x600/1e3a34/ffffff?text=Produk+4'">
+                        <span class="absolute top-4 left-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                            Trending
+                        </span>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 shadow">
+                            <i class="fa-solid fa-star text-amber-400 mr-1"></i>4.9
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="text-xs font-semibold text-brand-gold uppercase tracking-wider mb-1">Bawahan / Pants</div>
+                            <h3 class="text-xl font-bold text-slate-900 hover:text-brand-500 transition-colors">Aesthetic Pleated Wide Trousers Unisex</h3>
+                            <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                Celana kain berlipat (pleated) dengan jatuhan kain yang rapi, fleksibel untuk kegiatan formal maupun hangout santai.
+                            </p>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-slate-400 block font-medium">Harga Resmi</span>
+                                <span class="text-xl font-extrabold text-brand-500">Rp 320.000</span>
+                            </div>
+
+                            <button 
+                                onclick="handleBuyProduct('Aesthetic Pleated Wide Trousers Unisex', 'Rp 320.000', 'assets/images/produk-4.jpg', 'https://velours-store.example.com/checkout/4')" 
+                                class="btn-buy bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>Beli Produk</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRODUK 5 -->
+                <div class="product-card bg-white rounded-2xl overflow-hidden border border-slate-200 flex flex-col justify-between shadow-sm hover:shadow-xl sm:col-span-2 lg:col-span-1">
+                    <div class="relative overflow-hidden group">
+                        <img src="assets/images/produk-5.jpg" 
+                             alt="Cardigan Knitwear" 
+                             class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+                             onerror="this.src='https://placehold.co/600x600/1e3a34/ffffff?text=Produk+5'">
+                        <span class="absolute top-4 left-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                            Limited Edition
+                        </span>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 shadow">
+                            <i class="fa-solid fa-star text-amber-400 mr-1"></i>4.9
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="text-xs font-semibold text-brand-gold uppercase tracking-wider mb-1">Knitwear / Rajut</div>
+                            <h3 class="text-xl font-bold text-slate-900 hover:text-brand-500 transition-colors">Premium Knitwear Vintage Cardigan</h3>
+                            <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                Cardigan rajut motif vintage klasik dengan benang wool sintetis lembut, cocok dipadukan dengan kaos polos untuk tampilan estetik.
+                            </p>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-slate-400 block font-medium">Harga Resmi</span>
+                                <span class="text-xl font-extrabold text-brand-500">Rp 349.000</span>
+                            </div>
+
+                            <button 
+                                onclick="handleBuyProduct('Premium Knitwear Vintage Cardigan', 'Rp 349.000', 'assets/images/produk-5.jpg', 'https://velours-store.example.com/checkout/5')" 
+                                class="btn-buy bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>Beli Produk</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 2: SEKSI TIM PERUSAHAAN (6 ANGGOTA TIM LENGKAP) -->
+    <section id="team" class="py-20 bg-white border-t border-slate-200/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-gold/10 text-brand-gold font-bold text-xs uppercase tracking-wider">
+                    <i class="fa-solid fa-user-group"></i> Profesional Di Balik Layar
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Tim Kreatif & Manajemen Kami</h2>
+                <p class="text-slate-600 text-base">
+                    Di balik setiap helai pakaian berkualitas, ada tim berdedikasi tinggi yang berkomitmen menghadirkan produk fashion terbaik bagi Anda.
+                </p>
+            </div>
+
+            <!-- GRID 6 ORANG ANGGOTA TIM -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- TIM 1 -->
+                <div class="team-card bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 text-center p-6 flex flex-col items-center hover:bg-white hover:shadow-xl transition-all">
+                    <div class="relative w-36 h-36 mb-5 rounded-full overflow-hidden border-4 border-brand-gold shadow-lg">
+                        <img src="assets/images/team-1.jpg" 
+                             alt="Anggota Tim 1" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://placehold.co/300x300/1e3a34/ffffff?text=CEO'">
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Clarissa Alexandra</h3>
+                    <p class="text-brand-gold font-semibold text-sm mb-3">Founder & Chief Executive Officer (CEO)</p>
+                    <p class="text-slate-500 text-xs leading-relaxed mb-4">
+                        Memiliki pengalaman 12 tahun di industri fashion internasional, memimpin visi inovasi desain Velours.
+                    </p>
+                    <div class="flex gap-3 text-slate-400 text-sm">
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+
+                <!-- TIM 2 -->
+                <div class="team-card bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 text-center p-6 flex flex-col items-center hover:bg-white hover:shadow-xl transition-all">
+                    <div class="relative w-36 h-36 mb-5 rounded-full overflow-hidden border-4 border-brand-500 shadow-lg">
+                        <img src="assets/images/team-2.jpg" 
+                             alt="Anggota Tim 2" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://placehold.co/300x300/1e3a34/ffffff?text=Lead+Designer'">
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Aris Pratama</h3>
+                    <p class="text-brand-gold font-semibold text-sm mb-3">Head of Fashion Design & Creative</p>
+                    <p class="text-slate-500 text-xs leading-relaxed mb-4">
+                        Spesialis dalam merancang potongan pakaian modern minimalis dengan efisiensi estetika tinggi.
+                    </p>
+                    <div class="flex gap-3 text-slate-400 text-sm">
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+
+                <!-- TIM 3 -->
+                <div class="team-card bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 text-center p-6 flex flex-col items-center hover:bg-white hover:shadow-xl transition-all">
+                    <div class="relative w-36 h-36 mb-5 rounded-full overflow-hidden border-4 border-brand-gold shadow-lg">
+                        <img src="assets/images/team-3.jpg" 
+                             alt="Anggota Tim 3" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://placehold.co/300x300/1e3a34/ffffff?text=Marketing'">
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Nadia Rahmawati</h3>
+                    <p class="text-brand-gold font-semibold text-sm mb-3">VP Marketing & Digital Strategy</p>
+                    <p class="text-slate-500 text-xs leading-relaxed mb-4">
+                        Mengendalikan strategi pertumbuhan merek dan kampanye media sosial untuk menjangkau jutaan pelanggan.
+                    </p>
+                    <div class="flex gap-3 text-slate-400 text-sm">
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+
+                <!-- TIM 4 -->
+                <div class="team-card bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 text-center p-6 flex flex-col items-center hover:bg-white hover:shadow-xl transition-all">
+                    <div class="relative w-36 h-36 mb-5 rounded-full overflow-hidden border-4 border-brand-500 shadow-lg">
+                        <img src="assets/images/team-4.jpg" 
+                             alt="Anggota Tim 4" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://placehold.co/300x300/1e3a34/ffffff?text=Production'">
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Rian Hidayat</h3>
+                    <p class="text-brand-gold font-semibold text-sm mb-3">Production & Quality Control Manager</p>
+                    <p class="text-slate-500 text-xs leading-relaxed mb-4">
+                        Memastikan setiap detail jahitan, ketebalan bahan, dan pewarnaan kain memenuhi standar mutu internasional.
+                    </p>
+                    <div class="flex gap-3 text-slate-400 text-sm">
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+
+                <!-- TIM 5 -->
+                <div class="team-card bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 text-center p-6 flex flex-col items-center hover:bg-white hover:shadow-xl transition-all">
+                    <div class="relative w-36 h-36 mb-5 rounded-full overflow-hidden border-4 border-brand-gold shadow-lg">
+                        <img src="assets/images/team-5.jpg" 
+                             alt="Anggota Tim 5" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://placehold.co/300x300/1e3a34/ffffff?text=Stylist'">
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Maya Kusuma</h3>
+                    <p class="text-brand-gold font-semibold text-sm mb-3">Lead Fashion Stylist & Visual Merchandiser</p>
+                    <p class="text-slate-500 text-xs leading-relaxed mb-4">
+                        Bertanggung jawab atas kombinasi gaya, estetika katalog foto produk, serta padu padan busana modern.
+                    </p>
+                    <div class="flex gap-3 text-slate-400 text-sm">
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+
+                <!-- TIM 6 -->
+                <div class="team-card bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 text-center p-6 flex flex-col items-center hover:bg-white hover:shadow-xl transition-all">
+                    <div class="relative w-36 h-36 mb-5 rounded-full overflow-hidden border-4 border-brand-500 shadow-lg">
+                        <img src="assets/images/team-6.jpg" 
+                             alt="Anggota Tim 6" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://placehold.co/300x300/1e3a34/ffffff?text=CX+Lead'">
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Bima Wicaksono</h3>
+                    <p class="text-brand-gold font-semibold text-sm mb-3">Customer Experience & Relations Lead</p>
+                    <p class="text-slate-500 text-xs leading-relaxed mb-4">
+                        Menjaga pelayanan respon cepat dan pengalaman belanja konsumen terbaik dari pemesanan hingga pengiriman.
+                    </p>
+                    <div class="flex gap-3 text-slate-400 text-sm">
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="hover:text-brand-500 transition"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 3: SEKSI TENTANG PERUSAHAAN (TEKS MUDAH DIEDIT DARI HTML) -->
+    <section id="tentang" class="py-20 bg-slate-900 text-white relative overflow-hidden">
+        
+        <!-- Background subtle glow decoration -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Gambar/Visual Perusahaan -->
+                <div class="lg:col-span-5">
+                    <div class="relative">
+                        <img src="assets/images/about.jpg" 
+                             alt="Kantor & Studio Velours" 
+                             class="rounded-3xl shadow-2xl border border-slate-700/60 w-full h-[480px] object-cover"
+                             onerror="this.src='https://placehold.co/800x1000/1e3a34/ffffff?text=About+Company'">
+                        
+                        <div class="absolute -bottom-6 -right-6 bg-brand-gold text-slate-950 p-6 rounded-2xl shadow-xl hidden sm:block max-w-xs">
+                            <i class="fa-solid fa-quote-left text-2xl mb-2 opacity-60"></i>
+                            <p class="text-xs font-extrabold uppercase tracking-wider">Komitmen Mutu</p>
+                            <p class="text-xs font-medium mt-1">"Setiap detail serat kain adalah cerminan dari dedikasi kami."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TEKS TENTANG PERUSAHAAN (BISA DIUBAH DENGAN SANGAT MUDAH PADA DOKUMEN HTML INI) -->
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-brand-gold border border-slate-700 font-bold text-xs uppercase tracking-wider">
+                        <i class="fa-solid fa-building"></i> Profil Perusahaan
+                    </div>
+
+                    <!-- TEKS NAMA PERUSAHAAN -->
+                    <h2 class="text-3xl sm:text-4xl font-extrabold leading-tight text-white">
+                        PT Velours Apparel Indonesia
+                    </h2>
+
+                    <!-- TEKS DESKRIPSI PERUSAHAAN (Bisa Diedit Sesuai Kebutuhan) -->
+                    <!-- KODE EDITABLE TEXT START -->
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p id="about-text-p1">
+                            Didirikan pada tahun 2018, <strong class="text-white">Velours Apparel Co.</strong> merupakan pelopor brand pakaian lokal berstandar kualitas internasional di Indonesia. Kami berdedikasi menciptakan pakaian pria dan wanita berkonsep modern, rapi, dan fungsional.
+                        </p>
+                        <p id="about-text-p2">
+                            Kami percaya bahwa pakaian bukan sekadar penutup tubuh, melainkan bentuk ekspresi diri dan tingkat kepercayaan diri seseorang. Oleh karena itu, kami memadukan bahan dasar serat katun alami pilihan dengan teknik pemotongan presisi tinggi.
+                        </p>
+                    </div>
+                    <!-- KODE EDITABLE TEXT END -->
+
+                    <!-- VISI DAN MISI PERUSAHAAN -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                        <div class="p-5 rounded-2xl bg-slate-800/80 border border-slate-700/60">
+                            <div class="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white mb-3">
+                                <i class="fa-solid fa-eye"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-lg mb-1">Visi Perusahaan</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Menjadi merek busana modern terdepan yang menginspirasi gaya hidup elegan, nyaman, dan ramah lingkungan di Asia Tenggara.
+                            </p>
+                        </div>
+
+                        <div class="p-5 rounded-2xl bg-slate-800/80 border border-slate-700/60">
+                            <div class="w-9 h-9 rounded-xl bg-brand-gold flex items-center justify-center text-slate-900 mb-3">
+                                <i class="fa-solid fa-bullseye"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-lg mb-1">Misi Perusahaan</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Menghadirkan produk baju rajut, kaos, dan outerwear berkualitas tinggi dengan harga rasional serta layanan cepat ramah.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Nilai Utama Perusahaan -->
+                    <div class="pt-2 flex flex-wrap gap-4 text-xs text-slate-300">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-gold"></i> Material Eco-Friendly</span>
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-gold"></i> Jahitan Double-Stitch Presisi</span>
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-gold"></i> Bebas Bahan Kimia Berbahaya</span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER & INFORMASI KONTAK -->
+    <footer class="bg-slate-950 text-slate-400 border-t border-slate-800 pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                
+                <!-- Col 1: Brand Info -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <img id="footer-logo" 
+                             src="assets/images/logo.png" 
+                             alt="Logo Perusahaan Footer" 
+                             class="w-9 h-9 rounded-lg object-cover"
+                             onerror="this.src='https://placehold.co/100x100/1e3a34/ffffff?text=LOGO'">
+                        <span class="font-extrabold text-xl text-white tracking-wider">VELOURS</span>
+                    </div>
+                    <p class="text-xs leading-relaxed">
+                        Brand fashion pakaian berkualitas tinggi dengan desain rapi, modern, dan tahan lama.
+                    </p>
+                    <div class="flex gap-3 text-slate-300 pt-2">
+                        <a href="#" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-brand-500 hover:text-white flex items-center justify-center transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-brand-500 hover:text-white flex items-center justify-center transition"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-brand-500 hover:text-white flex items-center justify-center transition"><i class="fa-brands fa-tiktok"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-brand-500 hover:text-white flex items-center justify-center transition"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <!-- Col 2: Quick Links Navigasi -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4 border-l-2 border-brand-gold pl-3">Navigasi Tab</h4>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="#home" class="hover:text-brand-gold transition">Beranda Utama</a></li>
+                        <li><a href="#produk" class="hover:text-brand-gold transition">Katalog Produk Baju (5 Items)</a></li>
+                        <li><a href="#team" class="hover:text-brand-gold transition">Tim Profesional (6 Anggota)</a></li>
+                        <li><a href="#tentang" class="hover:text-brand-gold transition">Profil Tentang Perusahaan</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Jam Operasional & Layanan -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4 border-l-2 border-brand-gold pl-3">Jam Operasional</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li class="flex justify-between py-1 border-b border-slate-800">
+                            <span>Senin - Jumat:</span>
+                            <span class="text-white">08.00 - 20.00 WIB</span>
+                        </li>
+                        <li class="flex justify-between py-1 border-b border-slate-800">
+                            <span>Sabtu - Minggu:</span>
+                            <span class="text-white">09.00 - 17.00 WIB</span>
+                        </li>
+                        <li class="pt-2 text-emerald-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> Online Ordering 24 Jam
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Alamat Kontrol -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4 border-l-2 border-brand-gold pl-3">Lokasi Perusahaan</h4>
+                    <p class="text-xs text-slate-400 mb-3 leading-relaxed">
+                        Gedung Fashion Tower Lt. 8, Jl. Sudirman No. 128, Jakarta Selatan, Indonesia.
+                    </p>
+                    <p class="text-xs text-slate-300 font-semibold mb-1">
+                        <i class="fa-solid fa-phone text-brand-gold mr-1.5"></i> +62 (021) 555-8900
+                    </p>
+                    <p class="text-xs text-slate-300 font-semibold">
+                        <i class="fa-solid fa-envelope text-brand-gold mr-1.5"></i> info@velours-apparel.com
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="border-t border-slate-800/80 pt-8 flex flex-col sm:flex-row justify-between items-center text-xs gap-4">
+                <p>&copy; 2026 PT Velours Apparel Indonesia. Hak Cipta Dilindungi Undang-Undang.</p>
+                <div class="flex gap-6 text-slate-500">
+                    <a href="#" class="hover:underline">Syarat & Ketentuan</a>
+                    <a href="#" class="hover:underline">Kebijakan Privasi</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT & LOGIK INTERAKTIF -->
+    <script>
+        // Toggle Navigasi Menu Mobile
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                menu.classList.add('hidden');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        // Drawer Pengaturan Cepat URL Logo (Live Editor)
+        function toggleSettingsDrawer() {
+            const drawer = document.getElementById('settings-drawer');
+            if (drawer.classList.contains('translate-x-full')) {
+                drawer.classList.remove('translate-x-full');
+            } else {
+                drawer.classList.add('translate-x-full');
+            }
+        }
+
+        // Fungsi Update Logo Secara Real-time di Tampilan
+        function updateLogoImage() {
+            const inputUrl = document.getElementById('input-logo-url').value.trim();
+            if(!inputUrl) {
+                showToast('Masukkan URL gambar logo yang valid!', 'error');
+                return;
+            }
+            
+            const companyLogo = document.getElementById('company-logo');
+            const footerLogo = document.getElementById('footer-logo');
+            
+            companyLogo.src = inputUrl;
+            footerLogo.src = inputUrl;
+
+            showToast('Logo Perusahaan Berhasil Diperbarui!');
+        }
+
+        // Fungsi Penanganan Tombol Beli Produk (Membuka Modal Pembelian & Redirect Link)
+        function handleBuyProduct(name, price, img, buyLink) {
+            const modal = document.getElementById('buy-modal');
+            const modalContent = document.getElementById('buy-modal-content');
+            
+            document.getElementById('modal-product-title').innerText = 'Konfirmasi Pembelian';
+            document.getElementById('modal-product-name').innerText = name;
+            document.getElementById('modal-product-price').innerText = price;
+            document.getElementById('modal-product-img').src = img;
+            
+            // Mengeset Href Tombol Pembelian Utama Ke Link Produk
+            const buyBtnLink = document.getElementById('modal-buy-link');
+            buyBtnLink.href = buyLink;
+            
+            // Tampilkan Modal
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }
+
+        function closeBuyModal() {
+            const modal = document.getElementById('buy-modal');
+            const modalContent = document.getElementById('buy-modal-content');
+            
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Toast Notification System pengganti Alert
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgColor = type === 'success' ? 'bg-slate-900 text-white' : 'bg-red-600 text-white';
+            const icon = type === 'success' ? 'fa-circle-check text-brand-gold' : 'fa-circle-exclamation';
+            
+            toast.className = `${bgColor} px-4 py-3 rounded-xl shadow-2xl border border-slate-700 font-medium text-xs flex items-center gap-3 transition-all transform translate-y-2 pointer-events-auto`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} text-base"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-[-10px]');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Active State Link Smooth Scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= (sectionTop - 120)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('bg-white', 'text-brand-500', 'shadow-sm');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('bg-white', 'text-brand-500', 'shadow-sm');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
