@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura Apparel - Modern Fashion Store</title>
+    <title id="page-title">Aura Apparel - Modern Fashion Store</title>
     <!-- Google Fonts & FontAwesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +21,7 @@
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border-color: #e2e8f0;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             --radius: 16px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -51,16 +51,40 @@
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(226, 232, 240, 0.8);
             z-index: 1000;
-            transition: var(--transition);
         }
 
         .navbar {
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .menu-toggle-btn:hover {
+            background-color: rgba(15, 23, 42, 0.05);
+            color: var(--primary-accent);
         }
 
         .logo-container {
@@ -71,7 +95,7 @@
         }
 
         .logo-container img {
-            height: 40px;
+            height: 38px;
             width: auto;
             object-fit: contain;
             border-radius: 8px;
@@ -84,81 +108,148 @@
             letter-spacing: -0.5px;
         }
 
-        .btn-edit-logo {
+        .admin-action-badge {
             display: none;
             background: var(--primary-accent);
             color: white;
             border: none;
-            padding: 3px 8px;
-            border-radius: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
             font-size: 0.75rem;
+            font-weight: 700;
             cursor: pointer;
-            margin-left: 5px;
+            margin-left: 10px;
         }
 
-        .nav-right-group {
-            display: flex;
-            align-items: center;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 0.95rem;
+        /* --- SIDEBAR DRAWER MENU --- */
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
             transition: var(--transition);
         }
 
-        .nav-link:hover {
+        .drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar-drawer {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100%;
+            background: white;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 1.5rem;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .sidebar-drawer.active {
+            left: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .drawer-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .drawer-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .drawer-links {
+            list-style: none;
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .drawer-link-item a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.85rem 1rem;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .drawer-link-item a:hover {
+            background-color: var(--bg-light);
             color: var(--primary-accent);
         }
 
-        /* BUTTON ADMIN IN MENU */
-        .btn-admin-login, .btn-admin-logout {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.55rem 1.2rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.85rem;
+        .drawer-footer {
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-auth-drawer {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
             cursor: pointer;
-            display: inline-flex;
+            display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
+            border: none;
             transition: var(--transition);
         }
 
-        .btn-admin-login:hover {
+        .btn-auth-login {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-auth-login:hover {
             background-color: var(--primary-accent);
         }
 
-        .btn-admin-logout {
+        .btn-auth-logout {
             background-color: #475569;
+            color: white;
         }
 
-        .btn-admin-logout:hover {
+        .btn-auth-logout:hover {
             background-color: var(--danger);
-        }
-
-        .mobile-toggle {
-            display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--primary);
-            margin-left: 1.5rem;
         }
 
         /* --- HERO SECTION --- */
         .hero {
-            padding: 160px 2rem 90px;
+            padding: 160px 1.5rem 90px;
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
@@ -197,7 +288,6 @@
             text-decoration: none;
             font-weight: 600;
             transition: var(--transition);
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
         }
 
         .btn-cta:hover {
@@ -215,7 +305,7 @@
 
         /* --- SECTIONS COMMON --- */
         section {
-            padding: 90px 2rem;
+            padding: 90px 1.5rem;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -227,10 +317,6 @@
             margin-bottom: 3rem;
             flex-wrap: wrap;
             gap: 1rem;
-        }
-
-        .section-header-text {
-            text-align: left;
         }
 
         .section-tag {
@@ -250,28 +336,27 @@
             letter-spacing: -0.5px;
         }
 
-        .btn-add-product {
+        .btn-admin-add {
             display: none;
             background-color: #10b981;
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
+            padding: 0.7rem 1.4rem;
             border-radius: 50px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: var(--transition);
         }
 
-        .btn-add-product:hover {
+        .btn-admin-add:hover {
             background-color: #059669;
-            transform: translateY(-2px);
         }
 
         /* --- PRODUK SECTION --- */
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
             gap: 2rem;
         }
 
@@ -283,7 +368,6 @@
             transition: var(--transition);
             display: flex;
             flex-direction: column;
-            position: relative;
         }
 
         .product-card:hover {
@@ -365,7 +449,7 @@
         .admin-card-actions {
             display: none;
             gap: 8px;
-            padding: 0.8rem 1.5rem;
+            padding: 0.8rem 1.2rem;
             background: #f1f5f9;
             border-top: 1px solid var(--border-color);
         }
@@ -393,7 +477,7 @@
             cursor: pointer;
         }
 
-        /* --- TEAM SECTION (6 ORANG) --- */
+        /* --- TEAM SECTION --- */
         .team-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -407,6 +491,7 @@
             padding: 1.8rem 1rem;
             text-align: center;
             transition: var(--transition);
+            position: relative;
         }
 
         .team-card:hover {
@@ -446,6 +531,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 3.5rem;
             align-items: center;
+            position: relative;
         }
 
         .about-content h3 {
@@ -479,7 +565,7 @@
             height: 100%;
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(4px);
-            z-index: 2000;
+            z-index: 3000;
             justify-content: center;
             align-items: center;
             padding: 1rem;
@@ -494,6 +580,8 @@
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
             position: relative;
             animation: modalFade 0.3s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes modalFade {
@@ -549,6 +637,43 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
+        /* PASSWORD TOGGLE FIELD */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper .form-control {
+            padding-right: 45px;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px;
+        }
+
+        .toggle-password-btn:hover {
+            color: var(--primary-accent);
+        }
+
+        .preview-img-container {
+            margin-top: 8px;
+            display: none;
+        }
+
+        .preview-img-container img {
+            max-height: 100px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
         .btn-submit {
             width: 100%;
             background: var(--primary-accent);
@@ -570,7 +695,7 @@
         footer {
             background-color: var(--primary);
             color: white;
-            padding: 4rem 2rem 2rem;
+            padding: 4rem 1.5rem 2rem;
             margin-top: 5rem;
         }
 
@@ -625,7 +750,6 @@
             font-size: 0.85rem;
         }
 
-        /* --- RESPONSIVE MEDIA QUERIES --- */
         @media (max-width: 992px) {
             .hero {
                 grid-template-columns: 1fr;
@@ -635,24 +759,6 @@
             .about-container { grid-template-columns: 1fr; }
             .footer-container { grid-template-columns: 1fr; }
         }
-
-        @media (max-width: 768px) {
-            .nav-menu {
-                position: fixed;
-                top: 70px;
-                left: -100%;
-                width: 100%;
-                height: calc(100vh - 70px);
-                background: white;
-                flex-direction: column;
-                align-items: center;
-                padding-top: 3rem;
-                gap: 2rem;
-                transition: var(--transition);
-            }
-            .nav-menu.active { left: 0; }
-            .mobile-toggle { display: block; }
-        }
     </style>
 </head>
 <body>
@@ -660,31 +766,54 @@
     <!-- NAVBAR HEADER -->
     <header>
         <nav class="navbar">
-            <a href="#" class="logo-container">
-                <img id="company-logo" src="assets/images/logo.png" alt="Logo Perusahaan" onerror="this.src='https://via.placeholder.com/150x50/0f172a/ffffff?text=LOGO'">
-                <span class="logo-text">Aura Apparel</span>
-                <button id="btn-edit-logo" class="btn-edit-logo" onclick="openLogoModal()"><i class="fas fa-pen"></i> Ubah Logo</button>
-            </a>
-
-            <div class="nav-right-group">
-                <ul class="nav-menu" id="nav-menu">
-                    <li><a href="#produk" class="nav-link">Produk</a></li>
-                    <li><a href="#team" class="nav-link">Tim Kami</a></li>
-                    <li><a href="#tentang" class="nav-link">Tentang Perusahaan</a></li>
-                    <!-- TAB LOGIN ADMIN DALAM MENU ATAS -->
-                    <li>
-                        <button id="admin-auth-btn" class="btn-admin-login" onclick="handleAuthClick()">
-                            <i class="fas fa-lock"></i> Login Admin
-                        </button>
-                    </li>
-                </ul>
-
-                <div class="mobile-toggle" id="mobile-toggle">
+            <div class="nav-left">
+                <!-- TOMBOL GARIS TIGA DI SEBELAH KIRI LOGO -->
+                <button class="menu-toggle-btn" id="open-drawer-btn" title="Menu Navigasi">
                     <i class="fas fa-bars"></i>
-                </div>
+                </button>
+
+                <a href="#" class="logo-container">
+                    <img id="company-logo" src="assets/images/logo.png" alt="Logo" onerror="this.src='https://via.placeholder.com/150x50/0f172a/ffffff?text=LOGO'">
+                    <span id="company-name-nav" class="logo-text">Aura Apparel</span>
+                </a>
+
+                <!-- BADGE ADMIN UBAH NAMA WEB & LOGO -->
+                <button id="admin-brand-btn" class="admin-action-badge" onclick="openBrandModal()">
+                    <i class="fas fa-pen"></i> Edit Brand
+                </button>
             </div>
         </nav>
     </header>
+
+    <!-- DRAWER MENU NAVIGASI (POPUP SISI KIRI) -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <div class="sidebar-drawer" id="sidebar-drawer">
+        <div>
+            <div class="drawer-header">
+                <span class="drawer-title">Menu Utama</span>
+                <button class="drawer-close-btn" id="close-drawer-btn">&times;</button>
+            </div>
+
+            <ul class="drawer-links">
+                <li class="drawer-link-item">
+                    <a href="#produk" onclick="closeDrawer()"><i class="fas fa-tshirt"></i> Produk</a>
+                </li>
+                <li class="drawer-link-item">
+                    <a href="#team" onclick="closeDrawer()"><i class="fas fa-users"></i> Tim Kami</a>
+                </li>
+                <li class="drawer-link-item">
+                    <a href="#tentang" onclick="closeDrawer()"><i class="fas fa-building"></i> Tentang Perusahaan</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- TOMBOL LOGIN DITARUH DI BAGIAN BAWAH DRAWER -->
+        <div class="drawer-footer">
+            <button id="admin-auth-btn" class="btn-auth-drawer btn-auth-login" onclick="handleAuthClick()">
+                <i class="fas fa-lock"></i> Login
+            </button>
+        </div>
+    </div>
 
     <!-- HERO BANNER -->
     <section class="hero">
@@ -700,83 +829,59 @@
         </div>
     </section>
 
-    <!-- PRODUK SECTION (5 PRODUK DEFAULT + ADMIN CRUD) -->
+    <!-- PRODUK SECTION -->
     <section id="produk">
         <div class="section-header">
-            <div class="section-header-text">
+            <div>
                 <span class="section-tag">Koleksi Terpopuler</span>
                 <h2 class="section-title">Produk Pilihan Kami</h2>
             </div>
-            <!-- TAMBAH PRODUK BUTTON (MUNCUL SAAT ADMIN LOGIN) -->
-            <button id="btn-add-product" class="btn-add-product" onclick="openProductModal()">
+            <button id="btn-add-product" class="btn-admin-add" onclick="openProductModal()">
                 <i class="fas fa-plus"></i> Tambah Produk Baru
             </button>
         </div>
 
         <div class="product-grid" id="product-grid">
-            <!-- Content loaded dynamically via JavaScript -->
+            <!-- Dynamic Content -->
         </div>
     </section>
 
-    <!-- TEAM SECTION (6 ORANG) -->
+    <!-- TEAM SECTION -->
     <section id="team">
         <div class="section-header">
-            <div class="section-header-text">
+            <div>
                 <span class="section-tag">Orang Di Balik Layar</span>
                 <h2 class="section-title">Tim Profesional Kami</h2>
             </div>
+            <button id="btn-add-team" class="btn-admin-add" onclick="openTeamModal()">
+                <i class="fas fa-user-plus"></i> Tambah Anggota Tim
+            </button>
         </div>
 
-        <div class="team-grid">
-            <div class="team-card">
-                <img src="assets/images/team-1.jpg" alt="Alex Wijaya" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'">
-                <h3 class="team-name">Alex Wijaya</h3>
-                <p class="team-role">Chief Executive Officer</p>
-            </div>
-            <div class="team-card">
-                <img src="assets/images/team-2.jpg" alt="Siti Rahma" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80'">
-                <h3 class="team-name">Siti Rahma</h3>
-                <p class="team-role">Creative Director</p>
-            </div>
-            <div class="team-card">
-                <img src="assets/images/team-3.jpg" alt="Budi Santoso" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80'">
-                <h3 class="team-name">Budi Santoso</h3>
-                <p class="team-role">Lead Fashion Designer</p>
-            </div>
-            <div class="team-card">
-                <img src="assets/images/team-4.jpg" alt="Diana Putri" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80'">
-                <h3 class="team-name">Diana Putri</h3>
-                <p class="team-role">Digital Marketer</p>
-            </div>
-            <div class="team-card">
-                <img src="assets/images/team-5.jpg" alt="Rian Hidayat" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80'">
-                <h3 class="team-name">Rian Hidayat</h3>
-                <p class="team-role">Production Manager</p>
-            </div>
-            <div class="team-card">
-                <img src="assets/images/team-6.jpg" alt="Nadia Utami" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80'">
-                <h3 class="team-name">Nadia Utami</h3>
-                <p class="team-role">Customer Relations</p>
-            </div>
+        <div class="team-grid" id="team-grid">
+            <!-- Dynamic Content -->
         </div>
     </section>
 
-    <!-- ABOUT SECTION -->
+    <!-- TENTANG PERUSAHAAN SECTION -->
     <section id="tentang">
         <div class="about-container">
+            <button id="btn-edit-about" class="admin-action-badge" style="position: absolute; top: 15px; right: 15px;" onclick="openAboutModal()">
+                <i class="fas fa-pen"></i> Edit Perusahaan
+            </button>
             <div class="about-content">
                 <span class="section-tag">Profil Perusahaan</span>
-                <h3>Mengenal Aura Apparel Lebih Dekat</h3>
-                <p class="about-text">
+                <h3 id="about-title-display">Mengenal Aura Apparel Lebih Dekat</h3>
+                <p class="about-text" id="about-text1-display">
                     Aura Apparel didirikan pada tahun 2021 dengan visi menghadirkan pakaian berkualitas tinggi bergaya modern yang dapat dijangkau oleh semua kalangan. Kami berfokus pada pemilihan bahan baku ramah lingkungan dan proses produksi yang teliti.
                 </p>
-                <p class="about-text">
+                <p class="about-text" id="about-text2-display">
                     Setiap potong pakaian dirancang khusus untuk memastikan kenyamanan pengguna tanpa mengorbankan estetika modern yang terus berkembang.
                 </p>
             </div>
 
             <div class="about-image">
-                <img src="assets/images/about.jpg" alt="Tentang Perusahaan" class="about-img" onerror="this.src='https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=800&q=80'">
+                <img id="about-img-display" src="assets/images/about.jpg" alt="Tentang Perusahaan" class="about-img" onerror="this.src='https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=800&q=80'">
             </div>
         </div>
     </section>
@@ -785,7 +890,7 @@
     <footer>
         <div class="footer-container">
             <div>
-                <div class="footer-logo">Aura Apparel</div>
+                <div class="footer-logo" id="footer-brand-name">Aura Apparel</div>
                 <p class="footer-desc">Solusi pakaian modern, elegan, dan berkualitas tinggi untuk menunjang penampilan harian Anda.</p>
             </div>
 
@@ -809,7 +914,7 @@
         </div>
 
         <div class="copyright">
-            &copy; 2026 Aura Apparel. All rights reserved.
+            &copy; 2026 <span id="copyright-brand">Aura Apparel</span>. All rights reserved.
         </div>
     </footer>
 
@@ -827,14 +932,44 @@
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="passwordInput" class="form-control" placeholder="Masukkan password" required>
+                    <!-- FITUR UNTUK MELIHAT PASSWORD -->
+                    <div class="password-wrapper">
+                        <input type="password" id="passwordInput" class="form-control" placeholder="Masukkan password" required>
+                        <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility()">
+                            <i class="fas fa-eye" id="password-eye-icon"></i>
+                        </button>
+                    </div>
                 </div>
                 <button type="submit" class="btn-submit">Login</button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL TAMBAH / EDIT PRODUK -->
+    <!-- MODAL UBAH BRAND & LOGO -->
+    <div id="brandModal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Nama Web & Logo</h3>
+                <button class="modal-close" onclick="closeModal('brandModal')">&times;</button>
+            </div>
+            <form onsubmit="submitBrandForm(event)">
+                <div class="form-group">
+                    <label>Nama Perusahaan / Web</label>
+                    <input type="text" id="brandNameInput" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Upload Logo Baru Dari Perangkat</label>
+                    <input type="file" id="logoFileInput" class="form-control" accept="image/*" onchange="previewImage(this, 'logo-preview')">
+                    <div class="preview-img-container" id="logo-preview-container">
+                        <img id="logo-preview" src="">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Simpan Perubahan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT/TAMBAH PRODUK -->
     <div id="productModal" class="modal-backdrop">
         <div class="modal-card">
             <div class="modal-header">
@@ -856,11 +991,14 @@
                     <textarea id="prodDesc" class="form-control" rows="3" placeholder="Deskripsi singkat produk" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Path / URL Foto Produk</label>
-                    <input type="text" id="prodImg" class="form-control" placeholder="Contoh: assets/images/produk-1.jpg" required>
+                    <label>Upload Foto Produk Dari Perangkat</label>
+                    <input type="file" id="prodImgFile" class="form-control" accept="image/*" onchange="previewImage(this, 'prod-preview')">
+                    <div class="preview-img-container" id="prod-preview-container">
+                        <img id="prod-preview" src="">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Link Pembelian (Shopee / Tokopedia / WA / Sosmed)</label>
+                    <label>Link Pembelian (Shopee / WA / Tokopedia / Sosmed)</label>
                     <input type="text" id="prodLink" class="form-control" placeholder="Contoh: https://wa.me/6281234567890" required>
                 </div>
                 <button type="submit" class="btn-submit">Simpan Produk</button>
@@ -868,26 +1006,70 @@
         </div>
     </div>
 
-    <!-- MODAL UBAH LOGO -->
-    <div id="logoModal" class="modal-backdrop">
+    <!-- MODAL EDIT/TAMBAH ANGGOTA TIM -->
+    <div id="teamModal" class="modal-backdrop">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 class="modal-title">Ubah Logo Perusahaan</h3>
-                <button class="modal-close" onclick="closeModal('logoModal')">&times;</button>
+                <h3 class="modal-title" id="teamModalTitle">Tambah Anggota Tim</h3>
+                <button class="modal-close" onclick="closeModal('teamModal')">&times;</button>
             </div>
-            <form onsubmit="submitLogoForm(event)">
+            <form id="teamForm" onsubmit="submitTeamForm(event)">
+                <input type="hidden" id="teamId">
                 <div class="form-group">
-                    <label>Path / URL Foto Logo Baru</label>
-                    <input type="text" id="logoUrlInput" class="form-control" placeholder="assets/images/logo.png atau URL web" required>
+                    <label>Nama Anggota</label>
+                    <input type="text" id="teamName" class="form-control" placeholder="Contoh: Alex Wijaya" required>
                 </div>
-                <button type="submit" class="btn-submit">Simpan Logo</button>
+                <div class="form-group">
+                    <label>Jabatan / Role</label>
+                    <input type="text" id="teamRole" class="form-control" placeholder="Contoh: Chief Executive Officer" required>
+                </div>
+                <div class="form-group">
+                    <label>Upload Foto Anggota Dari Perangkat</label>
+                    <input type="file" id="teamImgFile" class="form-control" accept="image/*" onchange="previewImage(this, 'team-preview')">
+                    <div class="preview-img-container" id="team-preview-container">
+                        <img id="team-preview" src="">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Simpan Anggota</button>
             </form>
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- MODAL EDIT TENTANG PERUSAHAAN -->
+    <div id="aboutModal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Profil Perusahaan</h3>
+                <button class="modal-close" onclick="closeModal('aboutModal')">&times;</button>
+            </div>
+            <form onsubmit="submitAboutForm(event)">
+                <div class="form-group">
+                    <label>Judul Profil</label>
+                    <input type="text" id="aboutTitleInput" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Paragraf 1</label>
+                    <textarea id="aboutText1Input" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Paragraf 2</label>
+                    <textarea id="aboutText2Input" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Upload Foto Perusahaan Dari Perangkat</label>
+                    <input type="file" id="aboutImgFile" class="form-control" accept="image/*" onchange="previewImage(this, 'about-preview')">
+                    <div class="preview-img-container" id="about-preview-container">
+                        <img id="about-preview" src="">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Simpan Perubahan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT SYSTEM LOGIC -->
     <script>
-        // DATA DEFAULT PRODUK (5 PRODUK)
+        // --- DEFAULT DATA SEEDING ---
         const defaultProducts = [
             { id: 1, name: "Minimalist Crewneck Sweater", price: "Rp 249.000", desc: "Sweater katun premium dengan potongan modern yang nyaman digunakan sehari-hari.", img: "assets/images/produk-1.jpg", link: "https://shopee.co.id" },
             { id: 2, name: "Oversized Streetwear Tee", price: "Rp 149.000", desc: "Kaos t-shirt oversized berbahan Cotton Combed 24s yang adem dan menyerap keringat.", img: "assets/images/produk-2.jpg", link: "https://tokopedia.com" },
@@ -896,22 +1078,135 @@
             { id: 5, name: "Casual Chino Jacket", price: "Rp 329.000", desc: "Outwear ringan cocok untuk gaya berkendara atau hangout santai di akhir pekan.", img: "assets/images/produk-5.jpg", link: "https://tokopedia.com" }
         ];
 
-        // STATE ADMIN
+        const defaultTeam = [
+            { id: 1, name: "Alex Wijaya", role: "Chief Executive Officer", img: "assets/images/team-1.jpg" },
+            { id: 2, name: "Siti Rahma", role: "Creative Director", img: "assets/images/team-2.jpg" },
+            { id: 3, name: "Budi Santoso", role: "Lead Fashion Designer", img: "assets/images/team-3.jpg" },
+            { id: 4, name: "Diana Putri", role: "Digital Marketer", img: "assets/images/team-4.jpg" },
+            { id: 5, name: "Rian Hidayat", role: "Production Manager", img: "assets/images/team-5.jpg" },
+            { id: 6, name: "Nadia Utami", role: "Customer Relations", img: "assets/images/team-6.jpg" }
+        ];
+
+        const defaultAbout = {
+            title: "Mengenal Aura Apparel Lebih Dekat",
+            text1: "Aura Apparel didirikan pada tahun 2021 dengan visi menghadirkan pakaian berkualitas tinggi bergaya modern yang dapat dijangkau oleh semua kalangan. Kami berfokus pada pemilihan bahan baku ramah lingkungan dan proses produksi yang teliti.",
+            text2: "Setiap potong pakaian dirancang khusus untuk memastikan kenyamanan pengguna tanpa mengorbankan estetika modern yang terus berkembang.",
+            img: "assets/images/about.jpg"
+        };
+
+        const defaultBrand = {
+            name: "Aura Apparel",
+            logo: "assets/images/logo.png"
+        };
+
+        // --- STATE & INITIALIZATION ---
         let isAdmin = sessionStorage.getItem('isAdminLoggedIn') === 'true';
+        let currentProductBase64 = "";
+        let currentTeamBase64 = "";
+        let currentAboutBase64 = "";
+        let currentLogoBase64 = "";
 
-        // INISIALISASI LOCALSTORAGE
-        if (!localStorage.getItem('aura_products')) {
-            localStorage.setItem('aura_products', JSON.stringify(defaultProducts));
-        }
+        if (!localStorage.getItem('aura_products')) localStorage.setItem('aura_products', JSON.stringify(defaultProducts));
+        if (!localStorage.getItem('aura_team')) localStorage.setItem('aura_team', JSON.stringify(defaultTeam));
+        if (!localStorage.getItem('aura_about')) localStorage.setItem('aura_about', JSON.stringify(defaultAbout));
+        if (!localStorage.getItem('aura_brand')) localStorage.setItem('aura_brand', JSON.stringify(defaultBrand));
 
-        // LOAD SETELAH DOM READY
         document.addEventListener('DOMContentLoaded', () => {
-            loadLogo();
+            renderBrand();
             renderProducts();
+            renderTeam();
+            renderAbout();
             updateAdminUI();
+            setupDrawerListeners();
         });
 
-        // RENDER KARTU PRODUK
+        // --- DRAWER NAVIGATION LOGIC ---
+        function setupDrawerListeners() {
+            const drawer = document.getElementById('sidebar-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            const openBtn = document.getElementById('open-drawer-btn');
+            const closeBtn = document.getElementById('close-drawer-btn');
+
+            openBtn.addEventListener('click', () => {
+                drawer.classList.add('active');
+                overlay.classList.add('active');
+            });
+
+            closeBtn.addEventListener('click', closeDrawer);
+            overlay.addEventListener('click', closeDrawer);
+        }
+
+        function closeDrawer() {
+            document.getElementById('sidebar-drawer').classList.remove('active');
+            document.getElementById('drawer-overlay').classList.remove('active');
+        }
+
+        // --- TOGGLE SEE PASSWORD ---
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('passwordInput');
+            const eyeIcon = document.getElementById('password-eye-icon');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                pwdInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        // --- FILE HELPER (READ DEVICE FILES TO BASE64) ---
+        function previewImage(input, previewId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const result = e.target.result;
+                    document.getElementById(previewId).src = result;
+                    document.getElementById(previewId + '-container').style.display = 'block';
+
+                    if (previewId === 'prod-preview') currentProductBase64 = result;
+                    if (previewId === 'team-preview') currentTeamBase64 = result;
+                    if (previewId === 'about-preview') currentAboutBase64 = result;
+                    if (previewId === 'logo-preview') currentLogoBase64 = result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // --- BRAND & LOGO RENDER & EDIT ---
+        function renderBrand() {
+            const brand = JSON.parse(localStorage.getItem('aura_brand'));
+            document.getElementById('company-name-nav').innerText = brand.name;
+            document.getElementById('footer-brand-name').innerText = brand.name;
+            document.getElementById('copyright-brand').innerText = brand.name;
+            document.title = brand.name + " - Modern Fashion Store";
+            document.getElementById('company-logo').src = brand.logo;
+        }
+
+        function openBrandModal() {
+            const brand = JSON.parse(localStorage.getItem('aura_brand'));
+            document.getElementById('brandNameInput').value = brand.name;
+            document.getElementById('logo-preview').src = brand.logo;
+            document.getElementById('logo-preview-container').style.display = 'block';
+            currentLogoBase64 = brand.logo;
+            openModal('brandModal');
+        }
+
+        function submitBrandForm(e) {
+            e.preventDefault();
+            const brandName = document.getElementById('brandNameInput').value;
+            const brandData = {
+                name: brandName,
+                logo: currentLogoBase64
+            };
+            localStorage.setItem('aura_brand', JSON.stringify(brandData));
+            renderBrand();
+            closeModal('brandModal');
+        }
+
+        // --- PRODUCTS RENDER & EDIT ---
         function renderProducts() {
             const products = JSON.parse(localStorage.getItem('aura_products')) || [];
             const grid = document.getElementById('product-grid');
@@ -943,35 +1238,183 @@
             });
         }
 
-        // KELOLA LOGO
-        function loadLogo() {
-            const savedLogo = localStorage.getItem('aura_logo');
-            if (savedLogo) {
-                document.getElementById('company-logo').src = savedLogo;
+        function openProductModal() {
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+            document.getElementById('prod-preview-container').style.display = 'none';
+            currentProductBase64 = '';
+            document.getElementById('productModalTitle').innerText = 'Tambah Produk Baru';
+            openModal('productModal');
+        }
+
+        function openEditProductModal(id) {
+            const products = JSON.parse(localStorage.getItem('aura_products')) || [];
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('productId').value = product.id;
+            document.getElementById('prodName').value = product.name;
+            document.getElementById('prodPrice').value = product.price;
+            document.getElementById('prodDesc').value = product.desc;
+            document.getElementById('prodLink').value = product.link;
+            
+            currentProductBase64 = product.img;
+            document.getElementById('prod-preview').src = product.img;
+            document.getElementById('prod-preview-container').style.display = 'block';
+
+            document.getElementById('productModalTitle').innerText = 'Edit Produk';
+            openModal('productModal');
+        }
+
+        function submitProductForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('productId').value;
+            const name = document.getElementById('prodName').value;
+            const price = document.getElementById('prodPrice').value;
+            const desc = document.getElementById('prodDesc').value;
+            const link = document.getElementById('prodLink').value;
+            const img = currentProductBase64 || 'assets/images/produk-1.jpg';
+
+            let products = JSON.parse(localStorage.getItem('aura_products')) || [];
+
+            if (id) {
+                products = products.map(p => p.id === parseInt(id) ? { id: parseInt(id), name, price, desc, img, link } : p);
+            } else {
+                products.push({ id: Date.now(), name, price, desc, img, link });
+            }
+
+            localStorage.setItem('aura_products', JSON.stringify(products));
+            renderProducts();
+            closeModal('productModal');
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Hapus produk ini?')) {
+                let products = JSON.parse(localStorage.getItem('aura_products')) || [];
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('aura_products', JSON.stringify(products));
+                renderProducts();
             }
         }
 
-        function openLogoModal() {
-            document.getElementById('logoUrlInput').value = localStorage.getItem('aura_logo') || 'assets/images/logo.png';
-            openModal('logoModal');
+        // --- TEAM RENDER & EDIT ---
+        function renderTeam() {
+            const team = JSON.parse(localStorage.getItem('aura_team')) || [];
+            const grid = document.getElementById('team-grid');
+            grid.innerHTML = '';
+
+            team.forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'team-card';
+                card.innerHTML = `
+                    <img src="${t.img}" alt="${t.name}" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'">
+                    <h3 class="team-name">${t.name}</h3>
+                    <p class="team-role">${t.role}</p>
+                    <div class="admin-card-actions" style="display: ${isAdmin ? 'flex' : 'none'}; margin-top: 10px;">
+                        <button class="btn-admin-edit" onclick="openEditTeamModal(${t.id})"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn-admin-delete" onclick="deleteTeamMember(${t.id})"><i class="fas fa-trash"></i> Hapus</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
         }
 
-        function submitLogoForm(e) {
+        function openTeamModal() {
+            document.getElementById('teamForm').reset();
+            document.getElementById('teamId').value = '';
+            document.getElementById('team-preview-container').style.display = 'none';
+            currentTeamBase64 = '';
+            document.getElementById('teamModalTitle').innerText = 'Tambah Anggota Tim';
+            openModal('teamModal');
+        }
+
+        function openEditTeamModal(id) {
+            const team = JSON.parse(localStorage.getItem('aura_team')) || [];
+            const member = team.find(t => t.id === id);
+            if (!member) return;
+
+            document.getElementById('teamId').value = member.id;
+            document.getElementById('teamName').value = member.name;
+            document.getElementById('teamRole').value = member.role;
+            currentTeamBase64 = member.img;
+            document.getElementById('team-preview').src = member.img;
+            document.getElementById('team-preview-container').style.display = 'block';
+
+            document.getElementById('teamModalTitle').innerText = 'Edit Anggota Tim';
+            openModal('teamModal');
+        }
+
+        function submitTeamForm(e) {
             e.preventDefault();
-            const newLogoUrl = document.getElementById('logoUrlInput').value;
-            localStorage.setItem('aura_logo', newLogoUrl);
-            document.getElementById('company-logo').src = newLogoUrl;
-            closeModal('logoModal');
+            const id = document.getElementById('teamId').value;
+            const name = document.getElementById('teamName').value;
+            const role = document.getElementById('teamRole').value;
+            const img = currentTeamBase64 || 'assets/images/team-1.jpg';
+
+            let team = JSON.parse(localStorage.getItem('aura_team')) || [];
+
+            if (id) {
+                team = team.map(t => t.id === parseInt(id) ? { id: parseInt(id), name, role, img } : t);
+            } else {
+                team.push({ id: Date.now(), name, role, img });
+            }
+
+            localStorage.setItem('aura_team', JSON.stringify(team));
+            renderTeam();
+            closeModal('teamModal');
         }
 
-        // AUTHENTIKASI ADMIN
+        function deleteTeamMember(id) {
+            if (confirm('Hapus anggota tim ini?')) {
+                let team = JSON.parse(localStorage.getItem('aura_team')) || [];
+                team = team.filter(t => t.id !== id);
+                localStorage.setItem('aura_team', JSON.stringify(team));
+                renderTeam();
+            }
+        }
+
+        // --- ABOUT RENDER & EDIT ---
+        function renderAbout() {
+            const about = JSON.parse(localStorage.getItem('aura_about'));
+            document.getElementById('about-title-display').innerText = about.title;
+            document.getElementById('about-text1-display').innerText = about.text1;
+            document.getElementById('about-text2-display').innerText = about.text2;
+            document.getElementById('about-img-display').src = about.img;
+        }
+
+        function openAboutModal() {
+            const about = JSON.parse(localStorage.getItem('aura_about'));
+            document.getElementById('aboutTitleInput').value = about.title;
+            document.getElementById('aboutText1Input').value = about.text1;
+            document.getElementById('aboutText2Input').value = about.text2;
+            document.getElementById('about-preview').src = about.img;
+            document.getElementById('about-preview-container').style.display = 'block';
+            currentAboutBase64 = about.img;
+            openModal('aboutModal');
+        }
+
+        function submitAboutForm(e) {
+            e.preventDefault();
+            const aboutData = {
+                title: document.getElementById('aboutTitleInput').value,
+                text1: document.getElementById('aboutText1Input').value,
+                text2: document.getElementById('aboutText2Input').value,
+                img: currentAboutBase64
+            };
+            localStorage.setItem('aura_about', JSON.stringify(aboutData));
+            renderAbout();
+            closeModal('aboutModal');
+        }
+
+        // --- AUTHENTICATION & ADMIN UI ---
         function handleAuthClick() {
+            closeDrawer();
             if (isAdmin) {
-                // Logout Admin
                 isAdmin = false;
                 sessionStorage.setItem('isAdminLoggedIn', 'false');
                 updateAdminUI();
                 renderProducts();
+                renderTeam();
             } else {
                 openModal('loginModal');
             }
@@ -989,6 +1432,7 @@
                 document.getElementById('loginForm').reset();
                 updateAdminUI();
                 renderProducts();
+                renderTeam();
             } else {
                 alert('Username atau Password Admin salah!');
             }
@@ -996,81 +1440,29 @@
 
         function updateAdminUI() {
             const authBtn = document.getElementById('admin-auth-btn');
-            const addBtn = document.getElementById('btn-add-product');
-            const editLogoBtn = document.getElementById('btn-edit-logo');
+            const addProductBtn = document.getElementById('btn-add-product');
+            const addTeamBtn = document.getElementById('btn-add-team');
+            const editBrandBtn = document.getElementById('admin-brand-btn');
+            const editAboutBtn = document.getElementById('btn-edit-about');
 
             if (isAdmin) {
-                authBtn.className = 'btn-admin-logout';
-                authBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout Admin';
-                addBtn.style.display = 'inline-block';
-                editLogoBtn.style.display = 'inline-block';
+                authBtn.className = 'btn-auth-drawer btn-auth-logout';
+                authBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+                addProductBtn.style.display = 'inline-block';
+                addTeamBtn.style.display = 'inline-block';
+                editBrandBtn.style.display = 'inline-block';
+                editAboutBtn.style.display = 'inline-block';
             } else {
-                authBtn.className = 'btn-admin-login';
-                authBtn.innerHTML = '<i class="fas fa-lock"></i> Login Admin';
-                addBtn.style.display = 'none';
-                editLogoBtn.style.display = 'none';
+                authBtn.className = 'btn-auth-drawer btn-auth-login';
+                authBtn.innerHTML = '<i class="fas fa-lock"></i> Login';
+                addProductBtn.style.display = 'none';
+                addTeamBtn.style.display = 'none';
+                editBrandBtn.style.display = 'none';
+                editAboutBtn.style.display = 'none';
             }
         }
 
-        // KELOLA MODAL PRODUK (ADD / EDIT)
-        function openProductModal() {
-            document.getElementById('productForm').reset();
-            document.getElementById('productId').value = '';
-            document.getElementById('productModalTitle').innerText = 'Tambah Produk Baru';
-            openModal('productModal');
-        }
-
-        function openEditProductModal(id) {
-            const products = JSON.parse(localStorage.getItem('aura_products')) || [];
-            const product = products.find(p => p.id === id);
-            if (!product) return;
-
-            document.getElementById('productId').value = product.id;
-            document.getElementById('prodName').value = product.name;
-            document.getElementById('prodPrice').value = product.price;
-            document.getElementById('prodDesc').value = product.desc;
-            document.getElementById('prodImg').value = product.img;
-            document.getElementById('prodLink').value = product.link;
-
-            document.getElementById('productModalTitle').innerText = 'Edit Produk';
-            openModal('productModal');
-        }
-
-        function submitProductForm(e) {
-            e.preventDefault();
-            const id = document.getElementById('productId').value;
-            const name = document.getElementById('prodName').value;
-            const price = document.getElementById('prodPrice').value;
-            const desc = document.getElementById('prodDesc').value;
-            const img = document.getElementById('prodImg').value;
-            const link = document.getElementById('prodLink').value;
-
-            let products = JSON.parse(localStorage.getItem('aura_products')) || [];
-
-            if (id) {
-                // Edit produk lama
-                products = products.map(p => p.id === parseInt(id) ? { id: parseInt(id), name, price, desc, img, link } : p);
-            } else {
-                // Tambah produk baru
-                const newId = Date.now();
-                products.push({ id: newId, name, price, desc, img, link });
-            }
-
-            localStorage.setItem('aura_products', JSON.stringify(products));
-            renderProducts();
-            closeModal('productModal');
-        }
-
-        function deleteProduct(id) {
-            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-                let products = JSON.parse(localStorage.getItem('aura_products')) || [];
-                products = products.filter(p => p.id !== id);
-                localStorage.setItem('aura_products', JSON.stringify(products));
-                renderProducts();
-            }
-        }
-
-        // FUNGSI UTILITAS MODAL & NAVIGATION
+        // --- MODAL HELPERS ---
         function openModal(id) {
             document.getElementById(id).style.display = 'flex';
         }
@@ -1078,19 +1470,6 @@
         function closeModal(id) {
             document.getElementById(id).style.display = 'none';
         }
-
-        const mobileToggle = document.getElementById('mobile-toggle');
-        const navMenu = document.getElementById('nav-menu');
-
-        mobileToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
-        });
     </script>
 </body>
 </html>
