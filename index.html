@@ -14,6 +14,8 @@
             --primary: #0f172a;
             --primary-accent: #2563eb;
             --accent-hover: #1d4ed8;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
             --bg-light: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #1e293b;
@@ -45,7 +47,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(226, 232, 240, 0.8);
             z-index: 1000;
@@ -58,34 +60,52 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.2rem 2rem;
+            padding: 1rem 2rem;
         }
 
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             text-decoration: none;
         }
 
         .logo-container img {
-            height: 42px;
+            height: 40px;
             width: auto;
             object-fit: contain;
             border-radius: 8px;
         }
 
         .logo-text {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 800;
             color: var(--primary);
             letter-spacing: -0.5px;
         }
 
+        .btn-edit-logo {
+            display: none;
+            background: var(--primary-accent);
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .nav-right-group {
+            display: flex;
+            align-items: center;
+        }
+
         .nav-menu {
             display: flex;
             list-style: none;
-            gap: 2.5rem;
+            gap: 2rem;
+            align-items: center;
         }
 
         .nav-link {
@@ -94,27 +114,38 @@
             font-weight: 600;
             font-size: 0.95rem;
             transition: var(--transition);
-            position: relative;
         }
 
         .nav-link:hover {
             color: var(--primary-accent);
         }
 
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background-color: var(--primary-accent);
+        /* BUTTON ADMIN IN MENU */
+        .btn-admin-login, .btn-admin-logout {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.55rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             transition: var(--transition);
-            border-radius: 2px;
         }
 
-        .nav-link:hover::after {
-            width: 100%;
+        .btn-admin-login:hover {
+            background-color: var(--primary-accent);
+        }
+
+        .btn-admin-logout {
+            background-color: #475569;
+        }
+
+        .btn-admin-logout:hover {
+            background-color: var(--danger);
         }
 
         .mobile-toggle {
@@ -122,11 +153,12 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--primary);
+            margin-left: 1.5rem;
         }
 
         /* --- HERO SECTION --- */
         .hero {
-            padding: 180px 2rem 100px;
+            padding: 160px 2rem 90px;
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
@@ -175,22 +207,30 @@
 
         .hero-banner-img {
             width: 100%;
-            height: 450px;
+            height: 420px;
             object-fit: cover;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
         }
 
-        /* --- SECTION COMMON --- */
+        /* --- SECTIONS COMMON --- */
         section {
-            padding: 100px 2rem;
+            padding: 90px 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header-text {
+            text-align: left;
         }
 
         .section-tag {
@@ -210,10 +250,28 @@
             letter-spacing: -0.5px;
         }
 
+        .btn-add-product {
+            display: none;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-add-product:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+
         /* --- PRODUK SECTION --- */
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 2rem;
         }
 
@@ -225,6 +283,7 @@
             transition: var(--transition);
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .product-card:hover {
@@ -234,7 +293,7 @@
 
         .product-img-wrapper {
             width: 100%;
-            height: 280px;
+            height: 260px;
             overflow: hidden;
             background-color: #f1f5f9;
         }
@@ -258,14 +317,14 @@
         }
 
         .product-title {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.5rem;
         }
 
         .product-desc {
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
             margin-bottom: 1.2rem;
             flex-grow: 1;
@@ -294,8 +353,6 @@
             font-weight: 600;
             font-size: 0.85rem;
             transition: var(--transition);
-            border: none;
-            cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -305,10 +362,41 @@
             background-color: var(--primary-accent);
         }
 
-        /* --- TEAM SECTION --- */
+        .admin-card-actions {
+            display: none;
+            gap: 8px;
+            padding: 0.8rem 1.5rem;
+            background: #f1f5f9;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-admin-edit {
+            flex: 1;
+            background: var(--primary-accent);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-admin-delete {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* --- TEAM SECTION (6 ORANG) --- */
         .team-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
             gap: 2rem;
         }
 
@@ -316,7 +404,7 @@
             background: var(--card-bg);
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
-            padding: 1.8rem 1.2rem;
+            padding: 1.8rem 1rem;
             text-align: center;
             transition: var(--transition);
         }
@@ -327,17 +415,16 @@
         }
 
         .team-img {
-            width: 110px;
-            height: 110px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             object-fit: cover;
             margin: 0 auto 1.2rem;
             border: 4px solid var(--bg-light);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
         .team-name {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.2rem;
@@ -349,7 +436,7 @@
             font-weight: 600;
         }
 
-        /* --- TENTANG PERUSAHAAN SECTION --- */
+        /* --- ABOUT SECTION --- */
         .about-container {
             background: var(--card-bg);
             border-radius: var(--radius);
@@ -375,37 +462,108 @@
             margin-bottom: 1rem;
         }
 
-        .about-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .stat-card {
-            background: var(--bg-light);
-            padding: 1.2rem;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--primary-accent);
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
         .about-img {
             width: 100%;
-            height: 380px;
+            height: 350px;
             object-fit: cover;
             border-radius: 12px;
+        }
+
+        /* --- MODAL STYLES --- */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-card {
+            background: white;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 480px;
+            padding: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            position: relative;
+            animation: modalFade 0.3s ease-out;
+        }
+
+        @keyframes modalFade {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--primary-accent);
+            color: white;
+            border: none;
+            padding: 0.85rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-submit:hover {
+            background: var(--accent-hover);
         }
 
         /* --- FOOTER --- */
@@ -435,14 +593,12 @@
         .footer-desc {
             color: #94a3b8;
             font-size: 0.9rem;
-            max-width: 320px;
         }
 
         .footer-title {
             font-size: 1rem;
             font-weight: 700;
             margin-bottom: 1.2rem;
-            color: white;
         }
 
         .footer-links {
@@ -457,11 +613,6 @@
             color: #94a3b8;
             text-decoration: none;
             font-size: 0.9rem;
-            transition: var(--transition);
-        }
-
-        .footer-links a:hover {
-            color: white;
         }
 
         .copyright {
@@ -478,18 +629,11 @@
         @media (max-width: 992px) {
             .hero {
                 grid-template-columns: 1fr;
-                padding-top: 140px;
+                padding-top: 130px;
                 text-align: center;
             }
-
-            .about-container {
-                grid-template-columns: 1fr;
-                padding: 2rem;
-            }
-
-            .footer-container {
-                grid-template-columns: 1fr;
-            }
+            .about-container { grid-template-columns: 1fr; }
+            .footer-container { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 768px) {
@@ -503,20 +647,11 @@
                 flex-direction: column;
                 align-items: center;
                 padding-top: 3rem;
+                gap: 2rem;
                 transition: var(--transition);
             }
-
-            .nav-menu.active {
-                left: 0;
-            }
-
-            .mobile-toggle {
-                display: block;
-            }
-
-            .hero-title {
-                font-size: 2.5rem;
-            }
+            .nav-menu.active { left: 0; }
+            .mobile-toggle { display: block; }
         }
     </style>
 </head>
@@ -526,19 +661,27 @@
     <header>
         <nav class="navbar">
             <a href="#" class="logo-container">
-                <!-- Foto Logo Perusahaan (Mengarahkan ke folder assets/images/logo.png) -->
                 <img id="company-logo" src="assets/images/logo.png" alt="Logo Perusahaan" onerror="this.src='https://via.placeholder.com/150x50/0f172a/ffffff?text=LOGO'">
-                <span id="company-name-nav" class="logo-text">Aura Apparel</span>
+                <span class="logo-text">Aura Apparel</span>
+                <button id="btn-edit-logo" class="btn-edit-logo" onclick="openLogoModal()"><i class="fas fa-pen"></i> Ubah Logo</button>
             </a>
 
-            <ul class="nav-menu" id="nav-menu">
-                <li><a href="#produk" class="nav-link">Produk</a></li>
-                <li><a href="#team" class="nav-link">Tim Kami</a></li>
-                <li><a href="#tentang" class="nav-link">Tentang Perusahaan</a></li>
-            </ul>
+            <div class="nav-right-group">
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#produk" class="nav-link">Produk</a></li>
+                    <li><a href="#team" class="nav-link">Tim Kami</a></li>
+                    <li><a href="#tentang" class="nav-link">Tentang Perusahaan</a></li>
+                    <!-- TAB LOGIN ADMIN DALAM MENU ATAS -->
+                    <li>
+                        <button id="admin-auth-btn" class="btn-admin-login" onclick="handleAuthClick()">
+                            <i class="fas fa-lock"></i> Login Admin
+                        </button>
+                    </li>
+                </ul>
 
-            <div class="mobile-toggle" id="mobile-toggle">
-                <i class="fas fa-bars"></i>
+                <div class="mobile-toggle" id="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
             </div>
         </nav>
     </header>
@@ -557,146 +700,59 @@
         </div>
     </section>
 
-    <!-- SECTION PRODUK (5 PRODUK) -->
+    <!-- PRODUK SECTION (5 PRODUK DEFAULT + ADMIN CRUD) -->
     <section id="produk">
         <div class="section-header">
-            <span class="section-tag">Koleksi Terpopuler</span>
-            <h2 class="section-title">Produk Pilihan Kami</h2>
+            <div class="section-header-text">
+                <span class="section-tag">Koleksi Terpopuler</span>
+                <h2 class="section-title">Produk Pilihan Kami</h2>
+            </div>
+            <!-- TAMBAH PRODUK BUTTON (MUNCUL SAAT ADMIN LOGIN) -->
+            <button id="btn-add-product" class="btn-add-product" onclick="openProductModal()">
+                <i class="fas fa-plus"></i> Tambah Produk Baru
+            </button>
         </div>
 
-        <div class="product-grid">
-            <!-- Produk 1 -->
-            <div class="product-card">
-                <div class="product-img-wrapper">
-                    <img src="assets/images/produk-1.jpg" alt="Minimalist Crewneck Sweater" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=500&q=80'">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">Minimalist Crewneck Sweater</h3>
-                    <p class="product-desc">Sweater katun premium dengan potongan modern yang nyaman digunakan sehari-hari.</p>
-                    <div class="product-bottom">
-                        <span class="product-price">Rp 249.000</span>
-                        <!-- Tombol Beli: Ubah URL link pembelian di parameter terakhir -->
-                        <a href="https://shopee.co.id" target="_blank" class="btn-buy">
-                            <i class="fas fa-shopping-cart"></i> Beli
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Produk 2 -->
-            <div class="product-card">
-                <div class="product-img-wrapper">
-                    <img src="assets/images/produk-2.jpg" alt="Oversized Streetwear Tee" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80'">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">Oversized Streetwear Tee</h3>
-                    <p class="product-desc">Kaos t-shirt oversized berbahan Cotton Combed 24s yang adem dan menyerap keringat.</p>
-                    <div class="product-bottom">
-                        <span class="product-price">Rp 149.000</span>
-                        <a href="https://tokopedia.com" target="_blank" class="btn-buy">
-                            <i class="fas fa-shopping-cart"></i> Beli
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Produk 3 -->
-            <div class="product-card">
-                <div class="product-img-wrapper">
-                    <img src="assets/images/produk-3.jpg" alt="Classic Oxford Shirt" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=500&q=80'">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">Classic Oxford Shirt</h3>
-                    <p class="product-desc">Kemeja kasual formal yang memberikan kesan rapi dan elegan di setiap momen.</p>
-                    <div class="product-bottom">
-                        <span class="product-price">Rp 289.000</span>
-                        <a href="https://wa.me/6281234567890?text=Saya%20ingin%20membeli%20Classic%20Oxford%20Shirt" target="_blank" class="btn-buy">
-                            <i class="fas fa-shopping-cart"></i> Beli
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Produk 4 -->
-            <div class="product-card">
-                <div class="product-img-wrapper">
-                    <img src="assets/images/produk-4.jpg" alt="Urban Denim Jacket" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=500&q=80'">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">Urban Denim Jacket</h3>
-                    <p class="product-desc">Jaket jeans bergaya vintage dengan jahitan kokoh dan daya tahan maksimal.</p>
-                    <div class="product-bottom">
-                        <span class="product-price">Rp 399.000</span>
-                        <a href="https://shopee.co.id" target="_blank" class="btn-buy">
-                            <i class="fas fa-shopping-cart"></i> Beli
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Produk 5 -->
-            <div class="product-card">
-                <div class="product-img-wrapper">
-                    <img src="assets/images/produk-5.jpg" alt="Casual Chino Jacket" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=500&q=80'">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">Casual Chino Jacket</h3>
-                    <p class="product-desc">Outwear ringan cocok untuk gaya berkendara atau hangout santai di akhir pekan.</p>
-                    <div class="product-bottom">
-                        <span class="product-price">Rp 329.000</span>
-                        <a href="https://tokopedia.com" target="_blank" class="btn-buy">
-                            <i class="fas fa-shopping-cart"></i> Beli
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div class="product-grid" id="product-grid">
+            <!-- Content loaded dynamically via JavaScript -->
         </div>
     </section>
 
-    <!-- SECTION TIM KAMI (6 ANGGOTA) -->
+    <!-- TEAM SECTION (6 ORANG) -->
     <section id="team">
         <div class="section-header">
-            <span class="section-tag">Orang Di Balik Layar</span>
-            <h2 class="section-title">Tim Profesional Kami</h2>
+            <div class="section-header-text">
+                <span class="section-tag">Orang Di Balik Layar</span>
+                <h2 class="section-title">Tim Profesional Kami</h2>
+            </div>
         </div>
 
         <div class="team-grid">
-            <!-- Tim 1 -->
             <div class="team-card">
                 <img src="assets/images/team-1.jpg" alt="Alex Wijaya" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'">
                 <h3 class="team-name">Alex Wijaya</h3>
                 <p class="team-role">Chief Executive Officer</p>
             </div>
-
-            <!-- Tim 2 -->
             <div class="team-card">
                 <img src="assets/images/team-2.jpg" alt="Siti Rahma" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80'">
                 <h3 class="team-name">Siti Rahma</h3>
                 <p class="team-role">Creative Director</p>
             </div>
-
-            <!-- Tim 3 -->
             <div class="team-card">
                 <img src="assets/images/team-3.jpg" alt="Budi Santoso" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80'">
                 <h3 class="team-name">Budi Santoso</h3>
                 <p class="team-role">Lead Fashion Designer</p>
             </div>
-
-            <!-- Tim 4 -->
             <div class="team-card">
                 <img src="assets/images/team-4.jpg" alt="Diana Putri" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80'">
                 <h3 class="team-name">Diana Putri</h3>
                 <p class="team-role">Digital Marketer</p>
             </div>
-
-            <!-- Tim 5 -->
             <div class="team-card">
                 <img src="assets/images/team-5.jpg" alt="Rian Hidayat" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80'">
                 <h3 class="team-name">Rian Hidayat</h3>
                 <p class="team-role">Production Manager</p>
             </div>
-
-            <!-- Tim 6 -->
             <div class="team-card">
                 <img src="assets/images/team-6.jpg" alt="Nadia Utami" class="team-img" onerror="this.src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80'">
                 <h3 class="team-name">Nadia Utami</h3>
@@ -705,7 +761,7 @@
         </div>
     </section>
 
-    <!-- SECTION TENTANG PERUSAHAAN -->
+    <!-- ABOUT SECTION -->
     <section id="tentang">
         <div class="about-container">
             <div class="about-content">
@@ -717,17 +773,6 @@
                 <p class="about-text">
                     Setiap potong pakaian dirancang khusus untuk memastikan kenyamanan pengguna tanpa mengorbankan estetika modern yang terus berkembang.
                 </p>
-
-                <div class="about-stats">
-                    <div class="stat-card">
-                        <div class="stat-number">50K+</div>
-                        <div class="stat-label">Pelanggan Puas</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">100%</div>
-                        <div class="stat-label">Bahan Premium</div>
-                    </div>
-                </div>
             </div>
 
             <div class="about-image">
@@ -768,31 +813,282 @@
         </div>
     </footer>
 
-    <!-- JAVASCRIPT UNTUK NAVIGATION DENGAN RESPONSIF MOBILE -->
+    <!-- MODAL LOGIN ADMIN -->
+    <div id="loginModal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Login Admin</h3>
+                <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+            </div>
+            <form id="loginForm" onsubmit="submitLogin(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="usernameInput" class="form-control" placeholder="Masukkan username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="passwordInput" class="form-control" placeholder="Masukkan password" required>
+                </div>
+                <button type="submit" class="btn-submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH / EDIT PRODUK -->
+    <div id="productModal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title" id="productModalTitle">Tambah Produk Baru</h3>
+                <button class="modal-close" onclick="closeModal('productModal')">&times;</button>
+            </div>
+            <form id="productForm" onsubmit="submitProductForm(event)">
+                <input type="hidden" id="productId">
+                <div class="form-group">
+                    <label>Nama Produk</label>
+                    <input type="text" id="prodName" class="form-control" placeholder="Contoh: Crewneck Sweater" required>
+                </div>
+                <div class="form-group">
+                    <label>Harga Produk</label>
+                    <input type="text" id="prodPrice" class="form-control" placeholder="Contoh: Rp 249.000" required>
+                </div>
+                <div class="form-group">
+                    <label>Keterangan Produk</label>
+                    <textarea id="prodDesc" class="form-control" rows="3" placeholder="Deskripsi singkat produk" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Path / URL Foto Produk</label>
+                    <input type="text" id="prodImg" class="form-control" placeholder="Contoh: assets/images/produk-1.jpg" required>
+                </div>
+                <div class="form-group">
+                    <label>Link Pembelian (Shopee / Tokopedia / WA / Sosmed)</label>
+                    <input type="text" id="prodLink" class="form-control" placeholder="Contoh: https://wa.me/6281234567890" required>
+                </div>
+                <button type="submit" class="btn-submit">Simpan Produk</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL UBAH LOGO -->
+    <div id="logoModal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Ubah Logo Perusahaan</h3>
+                <button class="modal-close" onclick="closeModal('logoModal')">&times;</button>
+            </div>
+            <form onsubmit="submitLogoForm(event)">
+                <div class="form-group">
+                    <label>Path / URL Foto Logo Baru</label>
+                    <input type="text" id="logoUrlInput" class="form-control" placeholder="assets/images/logo.png atau URL web" required>
+                </div>
+                <button type="submit" class="btn-submit">Simpan Logo</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Toggle Menu Mobile
+        // DATA DEFAULT PRODUK (5 PRODUK)
+        const defaultProducts = [
+            { id: 1, name: "Minimalist Crewneck Sweater", price: "Rp 249.000", desc: "Sweater katun premium dengan potongan modern yang nyaman digunakan sehari-hari.", img: "assets/images/produk-1.jpg", link: "https://shopee.co.id" },
+            { id: 2, name: "Oversized Streetwear Tee", price: "Rp 149.000", desc: "Kaos t-shirt oversized berbahan Cotton Combed 24s yang adem dan menyerap keringat.", img: "assets/images/produk-2.jpg", link: "https://tokopedia.com" },
+            { id: 3, name: "Classic Oxford Shirt", price: "Rp 289.000", desc: "Kemeja kasual formal yang memberikan kesan rapi dan elegan di setiap momen.", img: "assets/images/produk-3.jpg", link: "https://wa.me/6281234567890?text=Saya%20ingin%20membeli%20Classic%20Oxford%20Shirt" },
+            { id: 4, name: "Urban Denim Jacket", price: "Rp 399.000", desc: "Jaket jeans bergaya vintage dengan jahitan kokoh dan daya tahan maksimal.", img: "assets/images/produk-4.jpg", link: "https://shopee.co.id" },
+            { id: 5, name: "Casual Chino Jacket", price: "Rp 329.000", desc: "Outwear ringan cocok untuk gaya berkendara atau hangout santai di akhir pekan.", img: "assets/images/produk-5.jpg", link: "https://tokopedia.com" }
+        ];
+
+        // STATE ADMIN
+        let isAdmin = sessionStorage.getItem('isAdminLoggedIn') === 'true';
+
+        // INISIALISASI LOCALSTORAGE
+        if (!localStorage.getItem('aura_products')) {
+            localStorage.setItem('aura_products', JSON.stringify(defaultProducts));
+        }
+
+        // LOAD SETELAH DOM READY
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLogo();
+            renderProducts();
+            updateAdminUI();
+        });
+
+        // RENDER KARTU PRODUK
+        function renderProducts() {
+            const products = JSON.parse(localStorage.getItem('aura_products')) || [];
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-img-wrapper">
+                        <img src="${p.img}" alt="${p.name}" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80'">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${p.name}</h3>
+                        <p class="product-desc">${p.desc}</p>
+                        <div class="product-bottom">
+                            <span class="product-price">${p.price}</span>
+                            <a href="${p.link}" target="_blank" class="btn-buy">
+                                <i class="fas fa-shopping-cart"></i> Beli
+                            </a>
+                        </div>
+                    </div>
+                    <div class="admin-card-actions" style="display: ${isAdmin ? 'flex' : 'none'};">
+                        <button class="btn-admin-edit" onclick="openEditProductModal(${p.id})"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn-admin-delete" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i> Hapus</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // KELOLA LOGO
+        function loadLogo() {
+            const savedLogo = localStorage.getItem('aura_logo');
+            if (savedLogo) {
+                document.getElementById('company-logo').src = savedLogo;
+            }
+        }
+
+        function openLogoModal() {
+            document.getElementById('logoUrlInput').value = localStorage.getItem('aura_logo') || 'assets/images/logo.png';
+            openModal('logoModal');
+        }
+
+        function submitLogoForm(e) {
+            e.preventDefault();
+            const newLogoUrl = document.getElementById('logoUrlInput').value;
+            localStorage.setItem('aura_logo', newLogoUrl);
+            document.getElementById('company-logo').src = newLogoUrl;
+            closeModal('logoModal');
+        }
+
+        // AUTHENTIKASI ADMIN
+        function handleAuthClick() {
+            if (isAdmin) {
+                // Logout Admin
+                isAdmin = false;
+                sessionStorage.setItem('isAdminLoggedIn', 'false');
+                updateAdminUI();
+                renderProducts();
+            } else {
+                openModal('loginModal');
+            }
+        }
+
+        function submitLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('usernameInput').value;
+            const p = document.getElementById('passwordInput').value;
+
+            if (u === 'adminavl' && p === 'avladmin123') {
+                isAdmin = true;
+                sessionStorage.setItem('isAdminLoggedIn', 'true');
+                closeModal('loginModal');
+                document.getElementById('loginForm').reset();
+                updateAdminUI();
+                renderProducts();
+            } else {
+                alert('Username atau Password Admin salah!');
+            }
+        }
+
+        function updateAdminUI() {
+            const authBtn = document.getElementById('admin-auth-btn');
+            const addBtn = document.getElementById('btn-add-product');
+            const editLogoBtn = document.getElementById('btn-edit-logo');
+
+            if (isAdmin) {
+                authBtn.className = 'btn-admin-logout';
+                authBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout Admin';
+                addBtn.style.display = 'inline-block';
+                editLogoBtn.style.display = 'inline-block';
+            } else {
+                authBtn.className = 'btn-admin-login';
+                authBtn.innerHTML = '<i class="fas fa-lock"></i> Login Admin';
+                addBtn.style.display = 'none';
+                editLogoBtn.style.display = 'none';
+            }
+        }
+
+        // KELOLA MODAL PRODUK (ADD / EDIT)
+        function openProductModal() {
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+            document.getElementById('productModalTitle').innerText = 'Tambah Produk Baru';
+            openModal('productModal');
+        }
+
+        function openEditProductModal(id) {
+            const products = JSON.parse(localStorage.getItem('aura_products')) || [];
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('productId').value = product.id;
+            document.getElementById('prodName').value = product.name;
+            document.getElementById('prodPrice').value = product.price;
+            document.getElementById('prodDesc').value = product.desc;
+            document.getElementById('prodImg').value = product.img;
+            document.getElementById('prodLink').value = product.link;
+
+            document.getElementById('productModalTitle').innerText = 'Edit Produk';
+            openModal('productModal');
+        }
+
+        function submitProductForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('productId').value;
+            const name = document.getElementById('prodName').value;
+            const price = document.getElementById('prodPrice').value;
+            const desc = document.getElementById('prodDesc').value;
+            const img = document.getElementById('prodImg').value;
+            const link = document.getElementById('prodLink').value;
+
+            let products = JSON.parse(localStorage.getItem('aura_products')) || [];
+
+            if (id) {
+                // Edit produk lama
+                products = products.map(p => p.id === parseInt(id) ? { id: parseInt(id), name, price, desc, img, link } : p);
+            } else {
+                // Tambah produk baru
+                const newId = Date.now();
+                products.push({ id: newId, name, price, desc, img, link });
+            }
+
+            localStorage.setItem('aura_products', JSON.stringify(products));
+            renderProducts();
+            closeModal('productModal');
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+                let products = JSON.parse(localStorage.getItem('aura_products')) || [];
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('aura_products', JSON.stringify(products));
+                renderProducts();
+            }
+        }
+
+        // FUNGSI UTILITAS MODAL & NAVIGATION
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
         const mobileToggle = document.getElementById('mobile-toggle');
         const navMenu = document.getElementById('nav-menu');
 
         mobileToggle.addEventListener('click', () => {
             navMenu.classList.toggle('active');
-            const icon = mobileToggle.querySelector('i');
-            if (navMenu.classList.contains('active')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            }
         });
 
-        // Tutup menu mobile ketika tautan diklik
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 navMenu.classList.remove('active');
-                const icon = mobileToggle.querySelector('i');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
             });
         });
     </script>
