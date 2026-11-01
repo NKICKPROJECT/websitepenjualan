@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Aura Apparel - Modern Fashion Store</title>
+    
     <!-- Google Fonts & FontAwesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- FIREBASE SDK (ONLINE DATABASE ENGINE) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
         /* --- CSS RESET & VARIABLES --- */
@@ -480,7 +485,7 @@
         /* --- TEAM SECTION --- */
         .team-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
             gap: 2rem;
         }
 
@@ -637,7 +642,6 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        /* PASSWORD TOGGLE FIELD */
         .password-wrapper {
             position: relative;
         }
@@ -767,7 +771,6 @@
     <header>
         <nav class="navbar">
             <div class="nav-left">
-                <!-- TOMBOL GARIS TIGA DI SEBELAH KIRI LOGO -->
                 <button class="menu-toggle-btn" id="open-drawer-btn" title="Menu Navigasi">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -777,7 +780,6 @@
                     <span id="company-name-nav" class="logo-text">Aura Apparel</span>
                 </a>
 
-                <!-- BADGE ADMIN UBAH NAMA WEB & LOGO -->
                 <button id="admin-brand-btn" class="admin-action-badge" onclick="openBrandModal()">
                     <i class="fas fa-pen"></i> Edit Brand
                 </button>
@@ -785,7 +787,7 @@
         </nav>
     </header>
 
-    <!-- DRAWER MENU NAVIGASI (POPUP SISI KIRI) -->
+    <!-- DRAWER MENU NAVIGASI (GARIS TIGA KIRI) -->
     <div class="drawer-overlay" id="drawer-overlay"></div>
     <div class="sidebar-drawer" id="sidebar-drawer">
         <div>
@@ -807,7 +809,6 @@
             </ul>
         </div>
 
-        <!-- TOMBOL LOGIN DITARUH DI BAGIAN BAWAH DRAWER -->
         <div class="drawer-footer">
             <button id="admin-auth-btn" class="btn-auth-drawer btn-auth-login" onclick="handleAuthClick()">
                 <i class="fas fa-lock"></i> Login
@@ -842,7 +843,7 @@
         </div>
 
         <div class="product-grid" id="product-grid">
-            <!-- Dynamic Content -->
+            <!-- Dynamic Realtime Content -->
         </div>
     </section>
 
@@ -859,7 +860,7 @@
         </div>
 
         <div class="team-grid" id="team-grid">
-            <!-- Dynamic Content -->
+            <!-- Dynamic Realtime Content -->
         </div>
     </section>
 
@@ -932,7 +933,6 @@
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <!-- FITUR UNTUK MELIHAT PASSWORD -->
                     <div class="password-wrapper">
                         <input type="password" id="passwordInput" class="form-control" placeholder="Masukkan password" required>
                         <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility()">
@@ -964,7 +964,7 @@
                         <img id="logo-preview" src="">
                     </div>
                 </div>
-                <button type="submit" class="btn-submit">Simpan Perubahan</button>
+                <button type="submit" class="btn-submit">Simpan Perubahan (Publik)</button>
             </form>
         </div>
     </div>
@@ -1001,7 +1001,7 @@
                     <label>Link Pembelian (Shopee / WA / Tokopedia / Sosmed)</label>
                     <input type="text" id="prodLink" class="form-control" placeholder="Contoh: https://wa.me/6281234567890" required>
                 </div>
-                <button type="submit" class="btn-submit">Simpan Produk</button>
+                <button type="submit" class="btn-submit">Simpan Produk (Publik)</button>
             </form>
         </div>
     </div>
@@ -1030,7 +1030,7 @@
                         <img id="team-preview" src="">
                     </div>
                 </div>
-                <button type="submit" class="btn-submit">Simpan Anggota</button>
+                <button type="submit" class="btn-submit">Simpan Anggota (Publik)</button>
             </form>
         </div>
     </div>
@@ -1062,65 +1062,112 @@
                         <img id="about-preview" src="">
                     </div>
                 </div>
-                <button type="submit" class="btn-submit">Simpan Perubahan</button>
+                <button type="submit" class="btn-submit">Simpan Perubahan (Publik)</button>
             </form>
         </div>
     </div>
 
-    <!-- JAVASCRIPT SYSTEM LOGIC -->
+    <!-- JAVASCRIPT SYSTEM LOGIC REALTIME -->
     <script>
-        // --- DEFAULT DATA SEEDING ---
-        const defaultProducts = [
-            { id: 1, name: "Minimalist Crewneck Sweater", price: "Rp 249.000", desc: "Sweater katun premium dengan potongan modern yang nyaman digunakan sehari-hari.", img: "assets/images/produk-1.jpg", link: "https://shopee.co.id" },
-            { id: 2, name: "Oversized Streetwear Tee", price: "Rp 149.000", desc: "Kaos t-shirt oversized berbahan Cotton Combed 24s yang adem dan menyerap keringat.", img: "assets/images/produk-2.jpg", link: "https://tokopedia.com" },
-            { id: 3, name: "Classic Oxford Shirt", price: "Rp 289.000", desc: "Kemeja kasual formal yang memberikan kesan rapi dan elegan di setiap momen.", img: "assets/images/produk-3.jpg", link: "https://wa.me/6281234567890?text=Saya%20ingin%20membeli%20Classic%20Oxford%20Shirt" },
-            { id: 4, name: "Urban Denim Jacket", price: "Rp 399.000", desc: "Jaket jeans bergaya vintage dengan jahitan kokoh dan daya tahan maksimal.", img: "assets/images/produk-4.jpg", link: "https://shopee.co.id" },
-            { id: 5, name: "Casual Chino Jacket", price: "Rp 329.000", desc: "Outwear ringan cocok untuk gaya berkendara atau hangout santai di akhir pekan.", img: "assets/images/produk-5.jpg", link: "https://tokopedia.com" }
-        ];
-
-        const defaultTeam = [
-            { id: 1, name: "Alex Wijaya", role: "Chief Executive Officer", img: "assets/images/team-1.jpg" },
-            { id: 2, name: "Siti Rahma", role: "Creative Director", img: "assets/images/team-2.jpg" },
-            { id: 3, name: "Budi Santoso", role: "Lead Fashion Designer", img: "assets/images/team-3.jpg" },
-            { id: 4, name: "Diana Putri", role: "Digital Marketer", img: "assets/images/team-4.jpg" },
-            { id: 5, name: "Rian Hidayat", role: "Production Manager", img: "assets/images/team-5.jpg" },
-            { id: 6, name: "Nadia Utami", role: "Customer Relations", img: "assets/images/team-6.jpg" }
-        ];
-
-        const defaultAbout = {
-            title: "Mengenal Aura Apparel Lebih Dekat",
-            text1: "Aura Apparel didirikan pada tahun 2021 dengan visi menghadirkan pakaian berkualitas tinggi bergaya modern yang dapat dijangkau oleh semua kalangan. Kami berfokus pada pemilihan bahan baku ramah lingkungan dan proses produksi yang teliti.",
-            text2: "Setiap potong pakaian dirancang khusus untuk memastikan kenyamanan pengguna tanpa mengorbankan estetika modern yang terus berkembang.",
-            img: "assets/images/about.jpg"
+        // -------------------------------------------------------------
+        // KONFIGURASI FIREBASE REALTIME DATABASE (GRATIS DARI GOOGLE)
+        // -------------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKey_GantiDenganMilikAnda",
+            authDomain: "aura-apparel.firebaseapp.com",
+            databaseURL: "https://aura-apparel-default-rtdb.firebaseio.com",
+            projectId: "aura-apparel",
+            storageBucket: "aura-apparel.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef123456"
         };
 
-        const defaultBrand = {
-            name: "Aura Apparel",
-            logo: "assets/images/logo.png"
+        // Inisialisasi Firebase
+        let db = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+        } catch (e) {
+            console.log("Firebase belum dikonfigurasi, sistem menggunakan mode fallback.");
+        }
+
+        // --- DATA DEFAULT STORE ---
+        const initialStoreData = {
+            brand: {
+                name: "Aura Apparel",
+                logo: "assets/images/logo.png"
+            },
+            about: {
+                title: "Mengenal Aura Apparel Lebih Dekat",
+                text1: "Aura Apparel didirikan pada tahun 2021 dengan visi menghadirkan pakaian berkualitas tinggi bergaya modern yang dapat dijangkau oleh semua kalangan. Kami berfokus pada pemilihan bahan baku ramah lingkungan dan proses produksi yang teliti.",
+                text2: "Setiap potong pakaian dirancang khusus untuk memastikan kenyamanan pengguna tanpa mengorbankan estetika modern yang terus berkembang.",
+                img: "assets/images/about.jpg"
+            },
+            products: [
+                { id: 1, name: "Minimalist Crewneck Sweater", price: "Rp 249.000", desc: "Sweater katun premium dengan potongan modern yang nyaman digunakan sehari-hari.", img: "assets/images/produk-1.jpg", link: "https://shopee.co.id" },
+                { id: 2, name: "Oversized Streetwear Tee", price: "Rp 149.000", desc: "Kaos t-shirt oversized berbahan Cotton Combed 24s yang adem dan menyerap keringat.", img: "assets/images/produk-2.jpg", link: "https://tokopedia.com" },
+                { id: 3, name: "Classic Oxford Shirt", price: "Rp 289.000", desc: "Kemeja kasual formal yang memberikan kesan rapi dan elegan di setiap momen.", img: "assets/images/produk-3.jpg", link: "https://wa.me/6281234567890?text=Saya%20ingin%20membeli%20Classic%20Oxford%20Shirt" },
+                { id: 4, name: "Urban Denim Jacket", price: "Rp 399.000", desc: "Jaket jeans bergaya vintage dengan jahitan kokoh dan daya tahan maksimal.", img: "assets/images/produk-4.jpg", link: "https://shopee.co.id" },
+                { id: 5, name: "Casual Chino Jacket", price: "Rp 329.000", desc: "Outwear ringan cocok untuk gaya berkendara atau hangout santai di akhir pekan.", img: "assets/images/produk-5.jpg", link: "https://tokopedia.com" }
+            ],
+            team: [
+                { id: 1, name: "Alex Wijaya", role: "Chief Executive Officer", img: "assets/images/team-1.jpg" },
+                { id: 2, name: "Siti Rahma", role: "Creative Director", img: "assets/images/team-2.jpg" },
+                { id: 3, name: "Budi Santoso", role: "Lead Fashion Designer", img: "assets/images/team-3.jpg" },
+                { id: 4, name: "Diana Putri", role: "Digital Marketer", img: "assets/images/team-4.jpg" },
+                { id: 5, name: "Rian Hidayat", role: "Production Manager", img: "assets/images/team-5.jpg" },
+                { id: 6, name: "Nadia Utami", role: "Customer Relations", img: "assets/images/team-6.jpg" }
+            ]
         };
 
-        // --- STATE & INITIALIZATION ---
+        let currentStoreData = JSON.parse(localStorage.getItem('aura_store_data')) || initialStoreData;
         let isAdmin = sessionStorage.getItem('isAdminLoggedIn') === 'true';
+
         let currentProductBase64 = "";
         let currentTeamBase64 = "";
         let currentAboutBase64 = "";
         let currentLogoBase64 = "";
 
-        if (!localStorage.getItem('aura_products')) localStorage.setItem('aura_products', JSON.stringify(defaultProducts));
-        if (!localStorage.getItem('aura_team')) localStorage.setItem('aura_team', JSON.stringify(defaultTeam));
-        if (!localStorage.getItem('aura_about')) localStorage.setItem('aura_about', JSON.stringify(defaultAbout));
-        if (!localStorage.getItem('aura_brand')) localStorage.setItem('aura_brand', JSON.stringify(defaultBrand));
-
         document.addEventListener('DOMContentLoaded', () => {
+            setupDrawerListeners();
+            updateAdminUI();
+            
+            if (db) {
+                // LISTEN DATA SINKRONISASI REALTIME (PUBLIK)
+                db.ref('storeData').on('value', (snapshot) => {
+                    const val = snapshot.val();
+                    if (val) {
+                        currentStoreData = val;
+                        localStorage.setItem('aura_store_data', JSON.stringify(val));
+                        renderAll();
+                    } else {
+                        // Inisialisasi awal ke Firebase jika data kosong
+                        db.ref('storeData').set(initialStoreData);
+                    }
+                });
+            } else {
+                renderAll();
+            }
+        });
+
+        // RE-RENDER SELURUH KOMPONEN WEBSITE
+        function renderAll() {
             renderBrand();
             renderProducts();
             renderTeam();
             renderAbout();
-            updateAdminUI();
-            setupDrawerListeners();
-        });
+        }
 
-        // --- DRAWER NAVIGATION LOGIC ---
+        // SIMPAN KE FIREBASE DAN LOCALSTORAGE
+        function saveStoreData() {
+            localStorage.setItem('aura_store_data', JSON.stringify(currentStoreData));
+            if (db) {
+                db.ref('storeData').set(currentStoreData);
+            }
+            renderAll();
+        }
+
+        // --- DRAWER MENU NAVIGASI ---
         function setupDrawerListeners() {
             const drawer = document.getElementById('sidebar-drawer');
             const overlay = document.getElementById('drawer-overlay');
@@ -1141,7 +1188,7 @@
             document.getElementById('drawer-overlay').classList.remove('active');
         }
 
-        // --- TOGGLE SEE PASSWORD ---
+        // --- TOGGLE LIHAT PASSWORD ---
         function togglePasswordVisibility() {
             const pwdInput = document.getElementById('passwordInput');
             const eyeIcon = document.getElementById('password-eye-icon');
@@ -1156,7 +1203,7 @@
             }
         }
 
-        // --- FILE HELPER (READ DEVICE FILES TO BASE64) ---
+        // --- UPLOAD FILE FOTO DARI PERANGKAT (BASE64) ---
         function previewImage(input, previewId) {
             const file = input.files[0];
             if (file) {
@@ -1175,9 +1222,9 @@
             }
         }
 
-        // --- BRAND & LOGO RENDER & EDIT ---
+        // --- BRANDING RENDER & EDIT ---
         function renderBrand() {
-            const brand = JSON.parse(localStorage.getItem('aura_brand'));
+            const brand = currentStoreData.brand || initialStoreData.brand;
             document.getElementById('company-name-nav').innerText = brand.name;
             document.getElementById('footer-brand-name').innerText = brand.name;
             document.getElementById('copyright-brand').innerText = brand.name;
@@ -1186,7 +1233,7 @@
         }
 
         function openBrandModal() {
-            const brand = JSON.parse(localStorage.getItem('aura_brand'));
+            const brand = currentStoreData.brand || initialStoreData.brand;
             document.getElementById('brandNameInput').value = brand.name;
             document.getElementById('logo-preview').src = brand.logo;
             document.getElementById('logo-preview-container').style.display = 'block';
@@ -1196,19 +1243,17 @@
 
         function submitBrandForm(e) {
             e.preventDefault();
-            const brandName = document.getElementById('brandNameInput').value;
-            const brandData = {
-                name: brandName,
+            currentStoreData.brand = {
+                name: document.getElementById('brandNameInput').value,
                 logo: currentLogoBase64
             };
-            localStorage.setItem('aura_brand', JSON.stringify(brandData));
-            renderBrand();
+            saveStoreData();
             closeModal('brandModal');
         }
 
-        // --- PRODUCTS RENDER & EDIT ---
+        // --- PRODUK RENDER & EDIT ---
         function renderProducts() {
-            const products = JSON.parse(localStorage.getItem('aura_products')) || [];
+            const products = currentStoreData.products || [];
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
 
@@ -1248,7 +1293,7 @@
         }
 
         function openEditProductModal(id) {
-            const products = JSON.parse(localStorage.getItem('aura_products')) || [];
+            const products = currentStoreData.products || [];
             const product = products.find(p => p.id === id);
             if (!product) return;
 
@@ -1275,31 +1320,28 @@
             const link = document.getElementById('prodLink').value;
             const img = currentProductBase64 || 'assets/images/produk-1.jpg';
 
-            let products = JSON.parse(localStorage.getItem('aura_products')) || [];
+            if (!currentStoreData.products) currentStoreData.products = [];
 
             if (id) {
-                products = products.map(p => p.id === parseInt(id) ? { id: parseInt(id), name, price, desc, img, link } : p);
+                currentStoreData.products = currentStoreData.products.map(p => p.id === parseInt(id) ? { id: parseInt(id), name, price, desc, img, link } : p);
             } else {
-                products.push({ id: Date.now(), name, price, desc, img, link });
+                currentStoreData.products.push({ id: Date.now(), name, price, desc, img, link });
             }
 
-            localStorage.setItem('aura_products', JSON.stringify(products));
-            renderProducts();
+            saveStoreData();
             closeModal('productModal');
         }
 
         function deleteProduct(id) {
-            if (confirm('Hapus produk ini?')) {
-                let products = JSON.parse(localStorage.getItem('aura_products')) || [];
-                products = products.filter(p => p.id !== id);
-                localStorage.setItem('aura_products', JSON.stringify(products));
-                renderProducts();
+            if (confirm('Apakah Anda yakin ingin menghapus produk ini? (Akan terhapus di semua perangkat)')) {
+                currentStoreData.products = (currentStoreData.products || []).filter(p => p.id !== id);
+                saveStoreData();
             }
         }
 
         // --- TEAM RENDER & EDIT ---
         function renderTeam() {
-            const team = JSON.parse(localStorage.getItem('aura_team')) || [];
+            const team = currentStoreData.team || [];
             const grid = document.getElementById('team-grid');
             grid.innerHTML = '';
 
@@ -1329,7 +1371,7 @@
         }
 
         function openEditTeamModal(id) {
-            const team = JSON.parse(localStorage.getItem('aura_team')) || [];
+            const team = currentStoreData.team || [];
             const member = team.find(t => t.id === id);
             if (!member) return;
 
@@ -1351,31 +1393,28 @@
             const role = document.getElementById('teamRole').value;
             const img = currentTeamBase64 || 'assets/images/team-1.jpg';
 
-            let team = JSON.parse(localStorage.getItem('aura_team')) || [];
+            if (!currentStoreData.team) currentStoreData.team = [];
 
             if (id) {
-                team = team.map(t => t.id === parseInt(id) ? { id: parseInt(id), name, role, img } : t);
+                currentStoreData.team = currentStoreData.team.map(t => t.id === parseInt(id) ? { id: parseInt(id), name, role, img } : t);
             } else {
-                team.push({ id: Date.now(), name, role, img });
+                currentStoreData.team.push({ id: Date.now(), name, role, img });
             }
 
-            localStorage.setItem('aura_team', JSON.stringify(team));
-            renderTeam();
+            saveStoreData();
             closeModal('teamModal');
         }
 
         function deleteTeamMember(id) {
-            if (confirm('Hapus anggota tim ini?')) {
-                let team = JSON.parse(localStorage.getItem('aura_team')) || [];
-                team = team.filter(t => t.id !== id);
-                localStorage.setItem('aura_team', JSON.stringify(team));
-                renderTeam();
+            if (confirm('Apakah Anda yakin ingin menghapus anggota tim ini?')) {
+                currentStoreData.team = (currentStoreData.team || []).filter(t => t.id !== id);
+                saveStoreData();
             }
         }
 
         // --- ABOUT RENDER & EDIT ---
         function renderAbout() {
-            const about = JSON.parse(localStorage.getItem('aura_about'));
+            const about = currentStoreData.about || initialStoreData.about;
             document.getElementById('about-title-display').innerText = about.title;
             document.getElementById('about-text1-display').innerText = about.text1;
             document.getElementById('about-text2-display').innerText = about.text2;
@@ -1383,7 +1422,7 @@
         }
 
         function openAboutModal() {
-            const about = JSON.parse(localStorage.getItem('aura_about'));
+            const about = currentStoreData.about || initialStoreData.about;
             document.getElementById('aboutTitleInput').value = about.title;
             document.getElementById('aboutText1Input').value = about.text1;
             document.getElementById('aboutText2Input').value = about.text2;
@@ -1395,26 +1434,24 @@
 
         function submitAboutForm(e) {
             e.preventDefault();
-            const aboutData = {
+            currentStoreData.about = {
                 title: document.getElementById('aboutTitleInput').value,
                 text1: document.getElementById('aboutText1Input').value,
                 text2: document.getElementById('aboutText2Input').value,
                 img: currentAboutBase64
             };
-            localStorage.setItem('aura_about', JSON.stringify(aboutData));
-            renderAbout();
+            saveStoreData();
             closeModal('aboutModal');
         }
 
-        // --- AUTHENTICATION & ADMIN UI ---
+        // --- AUTHENTICATION ADMIN ---
         function handleAuthClick() {
             closeDrawer();
             if (isAdmin) {
                 isAdmin = false;
                 sessionStorage.setItem('isAdminLoggedIn', 'false');
                 updateAdminUI();
-                renderProducts();
-                renderTeam();
+                renderAll();
             } else {
                 openModal('loginModal');
             }
@@ -1431,8 +1468,7 @@
                 closeModal('loginModal');
                 document.getElementById('loginForm').reset();
                 updateAdminUI();
-                renderProducts();
-                renderTeam();
+                renderAll();
             } else {
                 alert('Username atau Password Admin salah!');
             }
@@ -1462,7 +1498,7 @@
             }
         }
 
-        // --- MODAL HELPERS ---
+        // --- MODAL UTILS ---
         function openModal(id) {
             document.getElementById(id).style.display = 'flex';
         }
